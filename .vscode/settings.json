@@ -1,0 +1,7 @@
+{
+    "java.project.referencedLibraries": [
+        "lib/**/*.jar",
+        "c:\\ICS3U1\\arc.jar"
+    ],
+    "java.debug.settings.onBuildFailureProceed": true
+}

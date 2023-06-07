@@ -32,7 +32,7 @@ public class blackjack{
 			}
 		}
 		for(int intCounter2=0;intCounter2<52;intCounter2++){
-			for(int intCounter=0;intCounter<52-intCounter2;intCounter++){
+			for(int intCounter=0;intCounter<51-intCounter2;intCounter++){
 				int intTemp;
 				int intCurrent=intCards[intCounter][2];
 				int intNext=intCards[intCounter+1][2];
