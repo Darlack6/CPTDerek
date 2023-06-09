@@ -1,36 +1,49 @@
 import arc.*;
 import java.awt.image.BufferedImage;
+import java.awt.Font;
+import java.awt.Color;
 
 public class blackjack{
 	public static void main(String[] args){
 		Console con = new Console(1280,720);
 		int intMenu=homescreen(con);
-		if(intMenu==0){
-			int[][] intArray = new int[52][3];
-			int[][] intPlayer = new int[4][2];
-			int[][] intDealer = new int[4][2];
-			intArray=shuffle(intArray);
-			for(int intCounter=0;intCounter<2;intCounter++){	
-				intPlayer[intCounter][0]=intArray[intCounter][0];
-				intPlayer[intCounter][1]=intArray[intCounter][1];
-				intDealer[intCounter][0]=intArray[intCounter+2][0];
-				intDealer[intCounter][1]=intArray[intCounter+2][1];
+		while(intMenu!=0){
+			if(intMenu==0){
+				break;
+			}else if(intMenu==1){
+				highscores(con);
+				intMenu=homescreen(con);
+			}else if(intMenu==2){
+				con.closeConsole();
 			}
-			for(int i=0;i<52;i++){
-				System.out.println(intArray[i][0]+"-"+intArray[i][1]+"-"+intArray[i][2]);
-			}
-			for(int intCounter=0;intCounter<2;intCounter++){
-				con.println(intPlayer[intCounter][0]+"-"+intPlayer[intCounter][1]+"\n"+intDealer[intCounter][0]+"-"+intDealer[intCounter][1]);
-			}
-			BufferedImage imgPlayerCard1=cardPictures(con,intPlayer[0][0],intPlayer[0][1]);
-			BufferedImage imgPlayerCard2=cardPictures(con,intPlayer[1][0],intPlayer[1][1]);
-		}else if(intMenu==1){
-			//highscores
-		}else if(intMenu==2){
-			con.closeConsole();
 		}
+		int[][] intArray = new int[52][3];
+		int[][] intPlayer = new int[4][2];
+		int[][] intDealer = new int[4][2];
+		intArray=shuffle(intArray);
+		for(int intCounter=0;intCounter<2;intCounter++){	
+			intPlayer[intCounter][0]=intArray[intCounter][0];
+			intPlayer[intCounter][1]=intArray[intCounter][1];
+			intDealer[intCounter][0]=intArray[intCounter+2][0];
+			intDealer[intCounter][1]=intArray[intCounter+2][1];
+		}
+		for(int i=0;i<52;i++){
+			System.out.println(intArray[i][0]+"-"+intArray[i][1]+"-"+intArray[i][2]);
+		}
+		for(int intCounter=0;intCounter<2;intCounter++){
+			con.println(intPlayer[intCounter][0]+"-"+intPlayer[intCounter][1]+"\n"+intDealer[intCounter][0]+"-"+intDealer[intCounter][1]);
+		}
+		//BufferedImage imgPlayerCard1=cardPictures(con,intPlayer[0][0],intPlayer[0][1]);
+		//BufferedImage imgPlayerCard2=cardPictures(con,intPlayer[1][0],intPlayer[1][1]);
 		
+		BufferedImage imgPlayerCard1=con.loadImage("../cards/ace_of_diamonds.png");
+		BufferedImage imgPlayerCard2=con.loadImage("../cards/ace_of_clubs.png");
+		
+		con.drawRect(1280,720,0,0);
+		con.drawImage(imgPlayerCard1,0,0);
+		con.drawImage(imgPlayerCard2,300,300);
 	}
+	
 	public static int homescreen(Console con){
 		int inty=50;
 		int intMenuChoice=0;
@@ -68,6 +81,40 @@ public class blackjack{
 			con.sleep(33);
 		}
 		return intMenuChoice;
+	}
+	
+	public static void highscores(Console con){
+		BufferedImage imgHighscoreScreen = con.loadImage("../images/highscore.png");
+		Font fntBaron=con.loadFont("../fonts/BaronNeue-Regular.ttf",30);
+		con.setDrawFont(fntBaron);
+		TextInputFile txtHighscores = new TextInputFile("highscores.txt");
+		con.drawImage(imgHighscoreScreen,0,0);
+		
+		int intCounter=1;
+		int inty=150;
+		while(txtHighscores.eof()==false){
+			String stringHighscore=txtHighscores.readLine();
+			int intHighscore=txtHighscores.readInt();
+			
+			if(intCounter==1){
+				con.setDrawColor(new Color(217,160,101));
+			}else{
+				con.setDrawColor(Color.WHITE);
+			}
+			con.drawString(intCounter+". "+stringHighscore+" | "+intHighscore+" Dollars",480,inty);
+			intCounter++;
+			inty=inty+65;
+		}
+		con.repaint();
+		while(true){
+			int intKeypress = con.getKey();
+			//System.out.println(intKeypress);
+			if(intKeypress==27){
+				break;
+			}
+			con.sleep(33);
+			con.repaint();
+		}
 	}
 	
 	public static int[][] shuffle(int intCards[][]){
@@ -118,33 +165,33 @@ public class blackjack{
 		BufferedImage imgCard=null;
 		if(intValue==1){
 			if(intSuit==0){
-				imgCard = con.loadImage("test.jpeg");
+				imgCard = con.loadImage("../cards/ace_of_diamonds.png");
 			}else if(intSuit==1){
-				imgCard = con.loadImage("test.jpeg");
+				imgCard = con.loadImage("../cards/ace_of_clubs.png");
 			}else if(intSuit==2){
-				imgCard = con.loadImage("test.jpeg");
+				imgCard = con.loadImage("../cards/ace_of_hearts.png");
 			}else if(intSuit==3){						
-				imgCard = con.loadImage("test.jpeg");
-			}	
+				imgCard = con.loadImage("../cards/ace_of_diamonds.png");
+			}
 		}else if(intValue==2){
 			if(intSuit==0){
-				imgCard = con.loadImage("test.jpeg");
+				imgCard = con.loadImage("../cards/two_of_diamonds.png");
 			}else if(intSuit==1){
-				imgCard = con.loadImage("test.jpeg");
+				imgCard = con.loadImage("../cards/two_of_clubs.png");
 			}else if(intSuit==2){
-				imgCard = con.loadImage("test.jpeg");
+				imgCard = con.loadImage("../cards/two_of_hearts.png");
 			}else if(intSuit==3){						
-				imgCard = con.loadImage("test.jpeg");
+				imgCard = con.loadImage("../cards/two_of_spades.png");
 			}
 		}else if(intValue==3){
 			if(intSuit==0){
-				imgCard = con.loadImage("test.jpeg");
+				imgCard = con.loadImage("../cards/three_of_diamonds.png");
 			}else if(intSuit==1){
-				imgCard = con.loadImage("test.jpeg");
+				imgCard = con.loadImage("../cards/three_of_clubs.png");
 			}else if(intSuit==2){
-				imgCard = con.loadImage("test.jpeg");
+				imgCard = con.loadImage("../cards/three_of_diamonds.png");
 			}else if(intSuit==3){						
-				imgCard = con.loadImage("test.jpeg");
+				imgCard = con.loadImage("../cards/three_of_diamonds.png");
 			}
 		}else if(intValue==4){
 			if(intSuit==0){
