@@ -17,6 +17,9 @@ public class blackjack{
 				con.closeConsole();
 			}
 		}
+
+		int intUserBet=bet(con);
+
 		int[][] intArray = new int[52][3];
 		int[][] intPlayer = new int[4][2];
 		int[][] intDealer = new int[4][2];
@@ -33,15 +36,21 @@ public class blackjack{
 		for(int intCounter=0;intCounter<2;intCounter++){
 			con.println(intPlayer[intCounter][0]+"-"+intPlayer[intCounter][1]+"\n"+intDealer[intCounter][0]+"-"+intDealer[intCounter][1]);
 		}
-		//BufferedImage imgPlayerCard1=cardPictures(con,intPlayer[0][0],intPlayer[0][1]);
-		//BufferedImage imgPlayerCard2=cardPictures(con,intPlayer[1][0],intPlayer[1][1]);
+
+		BufferedImage imgPlayerCard1=cardPictures(con,intPlayer[0][0],intPlayer[0][1]);
+		BufferedImage imgPlayerCard2=cardPictures(con,intPlayer[1][0],intPlayer[1][1]);
+		BufferedImage imgTable=con.loadImage("../images/tablescreen.png");
 		
-		BufferedImage imgPlayerCard1=con.loadImage("../cards/ace_of_diamonds.png");
-		BufferedImage imgPlayerCard2=con.loadImage("../cards/ace_of_clubs.png");
+		//BufferedImage imgPlayerCard1=con.loadImage("../cards/ace_of_diamonds.png");
+		//BufferedImage imgPlayerCard2=con.loadImage("../cards/ace_of_clubs.png");
 		
-		con.drawRect(1280,720,0,0);
+		con.setDrawColor(Color.BLACK);
+		con.fillRect(0,0,1280,720);
+		con.drawImage(imgTable,0,1);
 		con.drawImage(imgPlayerCard1,0,0);
 		con.drawImage(imgPlayerCard2,300,300);
+		con.repaint();
+
 	}
 	
 	public static int homescreen(Console con){
@@ -116,6 +125,21 @@ public class blackjack{
 			con.repaint();
 		}
 	}
+
+	public static int bet(Console con){
+		int intBet=-5;
+		BufferedImage imgBetScreen=con.loadImage("../images/betscreen.png");
+		con.drawImage(imgBetScreen,0,0);
+		Font fntBaron=con.loadFont("../fonts/BaronNeue-Regular.ttf",40);
+		con.setTextFont(fntBaron);
+
+		while(intBet<0){
+			con.print("\n\n\n\n\n\n\n\n\n                                          $");
+			intBet=con.readInt();
+		}
+		con.clear();
+		return intBet;
+	}
 	
 	public static int[][] shuffle(int intCards[][]){
 		for(int i=0;i < 52;i++){
@@ -165,133 +189,133 @@ public class blackjack{
 		BufferedImage imgCard=null;
 		if(intValue==1){
 			if(intSuit==0){
-				imgCard = con.loadImage("../cards/ace_of_diamonds.png");
+				imgCard = con.loadImage("../cards/1.png");
 			}else if(intSuit==1){
-				imgCard = con.loadImage("../cards/ace_of_clubs.png");
+				imgCard = con.loadImage("../cards/2.png");
 			}else if(intSuit==2){
-				imgCard = con.loadImage("../cards/ace_of_hearts.png");
+				imgCard = con.loadImage("../cards/3.png");
 			}else if(intSuit==3){						
-				imgCard = con.loadImage("../cards/ace_of_diamonds.png");
+				imgCard = con.loadImage("../cards/4.png");
 			}
 		}else if(intValue==2){
 			if(intSuit==0){
-				imgCard = con.loadImage("../cards/two_of_diamonds.png");
+				imgCard = con.loadImage("../cards/5.png");
 			}else if(intSuit==1){
-				imgCard = con.loadImage("../cards/two_of_clubs.png");
+				imgCard = con.loadImage("../cards/6.png");
 			}else if(intSuit==2){
-				imgCard = con.loadImage("../cards/two_of_hearts.png");
+				imgCard = con.loadImage("../cards/7.png");
 			}else if(intSuit==3){						
-				imgCard = con.loadImage("../cards/two_of_spades.png");
+				imgCard = con.loadImage("../cards/8.png");
 			}
 		}else if(intValue==3){
 			if(intSuit==0){
-				imgCard = con.loadImage("../cards/three_of_diamonds.png");
+				imgCard = con.loadImage("../cards/9.png");
 			}else if(intSuit==1){
-				imgCard = con.loadImage("../cards/three_of_clubs.png");
+				imgCard = con.loadImage("../cards/10.png");
 			}else if(intSuit==2){
-				imgCard = con.loadImage("../cards/three_of_diamonds.png");
+				imgCard = con.loadImage("../cards/11.png");
 			}else if(intSuit==3){						
-				imgCard = con.loadImage("../cards/three_of_diamonds.png");
+				imgCard = con.loadImage("../cards/12.png");
 			}
 		}else if(intValue==4){
 			if(intSuit==0){
-				imgCard = con.loadImage("test.jpeg");
+				imgCard = con.loadImage("../cards/13.png");
 			}else if(intSuit==1){
-				imgCard = con.loadImage("test.jpeg");
+				imgCard = con.loadImage("../cards/14.png");
 			}else if(intSuit==2){
-				imgCard = con.loadImage("test.jpeg");
+				imgCard = con.loadImage("../cards/15.png");
 			}else if(intSuit==3){						
-				imgCard = con.loadImage("test.jpeg");
+				imgCard = con.loadImage("../cards/16.png");
 			}
 		}else if(intValue==5){
 			if(intSuit==0){
-				imgCard = con.loadImage("test.jpeg");
+				imgCard = con.loadImage("../cards/17.png");
 			}else if(intSuit==1){
-				imgCard = con.loadImage("test.jpeg");
+				imgCard = con.loadImage("../cards/18.png");
 			}else if(intSuit==2){
-				imgCard = con.loadImage("test.jpeg");
+				imgCard = con.loadImage("../cards/19.png");
 			}else if(intSuit==3){						
-				imgCard = con.loadImage("test.jpeg");
+				imgCard = con.loadImage("../cards/20.png");
 			}	
 		}else if(intValue==6){
 			if(intSuit==0){
-				imgCard = con.loadImage("test.jpeg");
+				imgCard = con.loadImage("../cards/21.png");
 			}else if(intSuit==1){
-				imgCard = con.loadImage("test.jpeg");
+				imgCard = con.loadImage("../cards/22.png");
 			}else if(intSuit==2){
-				imgCard = con.loadImage("test.jpeg");
+				imgCard = con.loadImage("../cards/23.png");
 			}else if(intSuit==3){						
-				imgCard = con.loadImage("test.jpeg");
+				imgCard = con.loadImage("../cards/24.png");
 			}
 		}else if(intValue==7){
 			if(intSuit==0){
-				imgCard = con.loadImage("test.jpeg");
+				imgCard = con.loadImage("../cards/25.png");
 			}else if(intSuit==1){
-				imgCard = con.loadImage("test.jpeg");
+				imgCard = con.loadImage("../cards/26.png");
 			}else if(intSuit==2){
-				imgCard = con.loadImage("test.jpeg");
+				imgCard = con.loadImage("../cards/27.png");
 			}else if(intSuit==3){						
-				imgCard = con.loadImage("test.jpeg");
+				imgCard = con.loadImage("../cards/28.png");
 			}
 		}else if(intValue==8){
 			if(intSuit==0){
-				imgCard = con.loadImage("test.jpeg");
+				imgCard = con.loadImage("../cards/29.png");
 			}else if(intSuit==1){
-				imgCard = con.loadImage("test.jpeg");
+				imgCard = con.loadImage("../cards/30.png");
 			}else if(intSuit==2){
-				imgCard = con.loadImage("test.jpeg");
+				imgCard = con.loadImage("../cards/31.png");
 			}else if(intSuit==3){						
-				imgCard = con.loadImage("test.jpeg");
+				imgCard = con.loadImage("../cards/32.png");
 			}
 		}else if(intValue==9){
 			if(intSuit==0){
-				imgCard = con.loadImage("test.jpeg");
+				imgCard = con.loadImage("../cards/33.png");
 			}else if(intSuit==1){
-				imgCard = con.loadImage("test.jpeg");
+				imgCard = con.loadImage("../cards/34.png");
 			}else if(intSuit==2){
-				imgCard = con.loadImage("test.jpeg");
+				imgCard = con.loadImage("../cards/35.png");
 			}else if(intSuit==3){						
-				imgCard = con.loadImage("test.jpeg");
+				imgCard = con.loadImage("../cards/36.png");
 			}
 		}else if(intValue==10){
 			if(intSuit==0){
-				imgCard = con.loadImage("test.jpeg");
+				imgCard = con.loadImage("../cards/37.png");
 			}else if(intSuit==1){
-				imgCard = con.loadImage("test.jpeg");
+				imgCard = con.loadImage("../cards/38.png");
 			}else if(intSuit==2){
-				imgCard = con.loadImage("test.jpeg");
+				imgCard = con.loadImage("../cards/39.png");
 			}else if(intSuit==3){						
-				imgCard = con.loadImage("test.jpeg");
+				imgCard = con.loadImage("../cards/40.png");
 			}
 		}else if(intValue==11){
 			if(intSuit==0){
-				imgCard = con.loadImage("test.jpeg");
+				imgCard = con.loadImage("../cards/41.png");
 			}else if(intSuit==1){
-				imgCard = con.loadImage("test.jpeg");
+				imgCard = con.loadImage("../cards/42.png");
 			}else if(intSuit==2){
-				imgCard = con.loadImage("test.jpeg");
+				imgCard = con.loadImage("../cards/43.png");
 			}else if(intSuit==3){						
-				imgCard = con.loadImage("test.jpeg");
+				imgCard = con.loadImage("../cards/44.png");
 			}
 		}else if(intValue==12){
 			if(intSuit==0){
-				imgCard = con.loadImage("test.jpeg");
+				imgCard = con.loadImage("../cards/45.png");
 			}else if(intSuit==1){
-				imgCard = con.loadImage("test.jpeg");
+				imgCard = con.loadImage("../cards/46.png");
 			}else if(intSuit==2){
-				imgCard = con.loadImage("test.jpeg");
+				imgCard = con.loadImage("../cards/47.png");
 			}else if(intSuit==3){						
-				imgCard = con.loadImage("test.jpeg");
+				imgCard = con.loadImage("../cards/48.png");
 			}
 		}else if(intValue==13){
 			if(intSuit==0){
-				imgCard = con.loadImage("test.jpeg");
+				imgCard = con.loadImage("../cards/49.png");
 			}else if(intSuit==1){
-				imgCard = con.loadImage("test.jpeg");
+				imgCard = con.loadImage("../cards/50.png");
 			}else if(intSuit==2){
-				imgCard = con.loadImage("test.jpeg");
+				imgCard = con.loadImage("../cards/51.png");
 			}else if(intSuit==3){						
-				imgCard = con.loadImage("test.jpeg");
+				imgCard = con.loadImage("../cards/52.png");
 			}	
 		}
 	return imgCard;
