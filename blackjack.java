@@ -39,6 +39,8 @@ public class blackjack{
 
 		BufferedImage imgPlayerCard1=cardPictures(con,intPlayer[0][0],intPlayer[0][1]);
 		BufferedImage imgPlayerCard2=cardPictures(con,intPlayer[1][0],intPlayer[1][1]);
+		BufferedImage imgDealerCard1=cardPictures(con,intDealer[0][0],intDealer[0][1]);
+		BufferedImage imgBackside=con.loadImage("../cards/backside.png");
 		BufferedImage imgTable=con.loadImage("../images/tablescreen.png");
 		
 		//BufferedImage imgPlayerCard1=con.loadImage("../cards/ace_of_diamonds.png");
@@ -47,10 +49,20 @@ public class blackjack{
 		con.setDrawColor(Color.BLACK);
 		con.fillRect(0,0,1280,720);
 		con.drawImage(imgTable,0,1);
-		con.drawImage(imgPlayerCard1,0,0);
-		con.drawImage(imgPlayerCard2,300,300);
+		con.drawImage(imgPlayerCard1,540,460);
+		con.drawImage(imgPlayerCard2,660,460);
+		con.drawImage(imgDealerCard1,540,210);
+		con.drawImage(imgBackside,660,210);
 		con.repaint();
 
+		while(true){
+			int intMouseButton=con.currentMouseButton();
+			if(intMouseButton==1){
+				int mousex=con.currentMouseX();
+				int mousey=con.currentMouseY();
+				System.out.println(mousex+" "+mousey);
+			}
+		}
 	}
 	
 	public static int homescreen(Console con){
