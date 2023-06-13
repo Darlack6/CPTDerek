@@ -24,7 +24,7 @@ public class blackjack{
 		int intUserBet=bet(con);
 
 		int[][] intArray = new int[52][3];
-		int[][] intPlayer = new int[5][2];
+		int[][] intPlayer = new int[6][2];
 		int[][] intDealer = new int[4][2];
 		intArray=shuffle(intArray);
 		for(int intCounter=0;intCounter<2;intCounter++){	
@@ -49,16 +49,25 @@ public class blackjack{
 		con.setDrawColor(Color.BLACK);
 		con.fillRect(0,0,1280,720);
 		con.drawImage(imgTable,0,1);
-		con.drawImage(imgPlayerCard1,540,460);
-		con.drawImage(imgPlayerCard2,660,460);
-		con.drawImage(imgDealerCard1,540,210);
-		con.drawImage(imgBackside,660,210);
+
+		con.drawImage(imgPlayerCard1,590,460); //540 and 660
+		con.drawImage(imgPlayerCard2,610,470);
+		con.drawImage(imgBackside,590,210);
+		con.drawImage(imgDealerCard1,610,220);
 		con.repaint();
 		
 		int intPlayerCardValue1=cardValues(intPlayer[0][0]);
 		int intPlayerCardValue2=cardValues(intPlayer[1][0]);
+		int intPlayerCardValue3=0;
+		int intPlayerCardValue4=0;
+		int intPlayerCardValue5=0;
 		System.out.println(intPlayerCardValue1+" "+intPlayerCardValue2);
 	
+
+		BufferedImage imgPlayerCard3=null;
+		BufferedImage imgPlayerCard4=null;
+		BufferedImage imgPlayerCard5=null;
+
 		while(blnCondition==true){
 			int intKeypress = con.getKey();
 			System.out.println(intKeypress);
@@ -71,17 +80,53 @@ public class blackjack{
 				intPlayer[intCount][0]=intArray[intCount+2][0];
 				intPlayer[intCount][1]=intArray[intCount+2][1];
 				if(intCount==2){
-					BufferedImage imgPlayerCard3=cardPictures(con,intPlayer[intCount][0],intPlayer[intCount][1]);
+					imgPlayerCard3=cardPictures(con,intPlayer[intCount][0],intPlayer[intCount][1]);	
+					intPlayerCardValue3=cardValues(intPlayer[intCount][0]);
+					con.drawImage(imgTable,0,0);
+					
+					con.drawImage(imgPlayerCard1,590,460); 
+					con.drawImage(imgPlayerCard2,610,470);
+					con.drawImage(imgPlayerCard3,630,460);
+
+					con.drawImage(imgBackside,590,210);
+					con.drawImage(imgDealerCard1,610,220);
+
+					con.repaint();
 				}else if(intCount==3){
-					BufferedImage imgPlayerCard4=cardPictures(con,intPlayer[intCount][0],intPlayer[intCount][1]);
+					imgPlayerCard4=cardPictures(con,intPlayer[intCount][0],intPlayer[intCount][1]);
+					intPlayerCardValue4=cardValues(intPlayer[intCount][0]);
+					con.drawImage(imgTable,0,0);
+					
+					con.drawImage(imgPlayerCard1,570,460); 
+					con.drawImage(imgPlayerCard2,590,470);
+					con.drawImage(imgPlayerCard3,610,460);
+					con.drawImage(imgPlayerCard4,630,470);
+
+					con.drawImage(imgBackside,590,210);
+					con.drawImage(imgDealerCard1,610,220);
+					
+					con.repaint();
 				}else if(intCount==4){
-					BufferedImage imgPlayerCard5=cardPictures(con,intPlayer[intCount][0],intPlayer[intCount][1]);
+					imgPlayerCard5=cardPictures(con,intPlayer[intCount][0],intPlayer[intCount][1]);
+					intPlayerCardValue5=cardValues(intPlayer[intCount][0]);
+					con.drawImage(imgTable,0,0);
+					
+					con.drawImage(imgPlayerCard1,570,460); 
+					con.drawImage(imgPlayerCard2,590,470);
+					con.drawImage(imgPlayerCard3,610,460);
+					con.drawImage(imgPlayerCard4,630,470);
+					con.drawImage(imgPlayerCard5,650,460);
+
+					con.drawImage(imgBackside,590,210);
+					con.drawImage(imgDealerCard1,610,220);
+					
+					con.repaint();
 				}
+				intCount++;
 			}else if(intKeypress==83){
 				blnCondition=false;
+				System.out.println(intPlayerCardValue1+" "+intPlayerCardValue2+" "+intPlayerCardValue3+" "+intPlayerCardValue4+" "+intPlayerCardValue5);
 			}
-			System.out.println(intPlayer[intCount][0]+" "+intPlayer[intCount][1]+" "+intCount);
-			intCount++;
 		}
 		
 
@@ -186,7 +231,6 @@ public class blackjack{
 	public static void playerTurn(Console con){
 
 	} 
-	
 	public static int[][] shuffle(int intCards[][]){
 		for(int i=0;i < 52;i++){
 			int intRandom = (int)(Math.random()*100+0);
