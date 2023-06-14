@@ -4,12 +4,13 @@ import java.awt.Font;
 import java.awt.Color;
 
 public class blackjack{
+	static int intUserBalance=1000;
 	public static void main(String[] args){
 		Console con = new Console(1280,720);
 		int intMenu=homescreen(con);
-		int intCount=2;
+		int intCount=2,intDealerCounter=2;
 		boolean blnCondition=true;
-		boolean blnLoseCondition;
+		boolean blnLoseCondition=false;
 		
 		while(intMenu!=0){
 			if(intMenu==0){
@@ -26,7 +27,7 @@ public class blackjack{
 
 		int[][] intArray = new int[52][3];
 		int[][] intPlayer = new int[6][2];
-		int[][] intDealer = new int[4][2];
+		int[][] intDealer = new int[6][2];
 		intArray=shuffle(intArray);
 		for(int intCounter=0;intCounter<2;intCounter++){	
 			intPlayer[intCounter][0]=intArray[intCounter][0];
@@ -129,6 +130,7 @@ public class blackjack{
 				intCount++;
 			}else if(intKeypress==83){
 				blnCondition=false;
+				blnLoseCondition=false;
 				System.out.println(intPlayerCardValue1+" "+intPlayerCardValue2+" "+intPlayerCardValue3+" "+intPlayerCardValue4+" "+intPlayerCardValue5);
 			}
 
@@ -160,6 +162,80 @@ public class blackjack{
 			con.println(intPlayerCardValue1+intPlayerCardValue2+intPlayerCardValue3+intPlayerCardValue4+intPlayerCardValue5);
 			con.repaint();
 		}
+		
+		if(blnLoseCondition==true){
+			intUserBet=loseScreen(con,intUserBet);
+			System.out.println(intUserBet);
+			playAgainScreen(con,intUserBet,blnLoseCondition);
+			
+		}else if(blnLoseCondition==false){//dealer turn
+			BufferedImage imgDealerCard2=cardPictures(con,intDealer[1][0],intDealer[1][1]);
+			BufferedImage imgDealerCard3=null;
+			BufferedImage imgDealerCard4=null;
+			BufferedImage imgDealerCard5=null;
+			int intDealerCardValue1=cardValues(intDealer[0][0]);
+			int intDealerCardValue2=cardValues(intDealer[1][0]);
+			int intDealerCardValue3=0;
+			int intDealerCardValue4=0;
+			int intDealerCardValue5=0;
+			con.drawImage(imgDealerCard2,590,210);
+			
+			while(intDealerCardValue1+intDealerCardValue2<17){
+				intDealer[intDealerCounter][0]=intArray[intCount+intDealerCounter-1][0];
+				intDealer[intDealerCounter][1]=intArray[intCount+intDealerCounter-1][1];
+				if(intDealerCounter==2){
+					imgDealerCard3=cardPictures(con,intDealer[intDealerCounter][0],intDealer[intDealerCounter][1]);	
+					intDealerCardValue3=cardValues(intDealer[intDealerCounter][0]);
+					con.drawImage(imgTable,0,0);
+					
+					con.drawImage(imgPlayerCard1,570,460); 
+					con.drawImage(imgPlayerCard2,590,470);
+					con.drawImage(imgPlayerCard3,610,460);
+					con.drawImage(imgPlayerCard4,630,470);
+					con.drawImage(imgPlayerCard5,650,460);
+
+					con.drawImage(imgBackside,590,210);
+					con.drawImage(imgDealerCard1,610,220);
+
+					System.out.println(intPlayerCardValue3);
+					con.repaint();
+				}else if(intDealerCounter==3){
+					imgDealerCard4=cardPictures(con,intDealer[intDealerCounter][0],intDealer[intDealerCounter][1]);
+					intDealerCardValue4=cardValues(intDealer[intDealerCounter][0]);
+					con.drawImage(imgTable,0,0);
+					
+					con.drawImage(imgPlayerCard1,570,460); 
+					con.drawImage(imgPlayerCard2,590,470);
+					con.drawImage(imgPlayerCard3,610,460);
+					con.drawImage(imgPlayerCard4,630,470);
+					con.drawImage(imgPlayerCard5,650,460);
+					
+					con.drawImage(imgBackside,590,210);
+					con.drawImage(imgDealerCard1,610,220);
+					
+					con.repaint();
+				}else if(intDealerCounter==4){
+					imgDealerCard5=cardPictures(con,intDealer[intDealerCounter][0],intDealer[intDealerCounter][1]);
+					intDealerCardValue5=cardValues(intDealer[intDealerCounter][0]);
+					con.drawImage(imgTable,0,0);
+					
+					con.drawImage(imgPlayerCard1,570,460); 
+					con.drawImage(imgPlayerCard2,590,470);
+					con.drawImage(imgPlayerCard3,610,460);
+					con.drawImage(imgPlayerCard4,630,470);
+					con.drawImage(imgPlayerCard5,650,460);
+					
+					con.drawImage(imgBackside,590,210);
+					con.drawImage(imgDealerCard1,610,220);
+					
+					con.repaint();
+					
+				}
+				intDealerCounter++;
+			}
+			con.repaint();
+		}
+		
 	
 		
 
@@ -264,6 +340,42 @@ public class blackjack{
 	public static void playerTurn(Console con){
 
 	} 
+	
+	public static int loseScreen(Console con,int intBet){
+		int intKeypress=0;
+		con.sleep(1000);
+		BufferedImage imgOverlay=con.loadImage("../images/overlay.png");
+		BufferedImage imgLose=con.loadImage("../images/loseScreen.png");
+		con.drawImage(imgOverlay,0,0);
+		con.drawImage(imgLose,0,0);
+		con.repaint();
+		while(intKeypress!=67){
+			System.out.println(intKeypress);
+			intKeypress=con.getKey();
+		}
+		intBet=intBet*-1;
+		return intBet;
+	}
+	
+	public static void playAgainScreen(Console con,int intBet,boolean blnCondition){
+		BufferedImage imgBalanceScreen=con.loadImage("../images/balanceScreen.png");
+		BufferedImage imgDown=con.loadImage("../images/arrowDown.png");
+		BufferedImage imgUp=con.loadImage("../images/arrowUp.png");
+		con.clear();
+		con.drawImage(imgBalanceScreen,0,0);
+		Font fntBaron=con.loadFont("../fonts/BaronNeue-Regular.ttf",55);
+		con.setTextFont(fntBaron);
+		
+		con.println("\n\n\n\n\n                   old Balance: $"+intUserBalance);
+		intUserBalance=intUserBalance+intBet;
+		con.println("\n                   new Balance: $"+intUserBalance);
+		if(blnCondition==true){
+			con.drawImage(imgDown,900,395);
+		}else{
+			con.drawImage(imgUp,900,395);
+		}
+		con.repaint();
+	}
 	public static int[][] shuffle(int intCards[][]){
 		for(int i=0;i < 52;i++){
 			int intRandom = (int)(Math.random()*100+0);
