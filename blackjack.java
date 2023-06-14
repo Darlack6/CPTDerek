@@ -9,6 +9,7 @@ public class blackjack{
 		int intMenu=homescreen(con);
 		int intCount=2;
 		boolean blnCondition=true;
+		boolean blnLoseCondition;
 		
 		while(intMenu!=0){
 			if(intMenu==0){
@@ -75,7 +76,9 @@ public class blackjack{
 			if(intPlayerCardValue1+intPlayerCardValue2==21){
 				intUserBet=intUserBet*3;
 				blnCondition=false;
+				blnLoseCondition=false;
 			}
+
 			if(intKeypress==72){
 				intPlayer[intCount][0]=intArray[intCount+2][0];
 				intPlayer[intCount][1]=intArray[intCount+2][1];
@@ -91,6 +94,7 @@ public class blackjack{
 					con.drawImage(imgBackside,590,210);
 					con.drawImage(imgDealerCard1,610,220);
 
+					System.out.println(intPlayerCardValue3);
 					con.repaint();
 				}else if(intCount==3){
 					imgPlayerCard4=cardPictures(con,intPlayer[intCount][0],intPlayer[intCount][1]);
@@ -127,7 +131,36 @@ public class blackjack{
 				blnCondition=false;
 				System.out.println(intPlayerCardValue1+" "+intPlayerCardValue2+" "+intPlayerCardValue3+" "+intPlayerCardValue4+" "+intPlayerCardValue5);
 			}
+
+			if(intCount==5){
+				blnCondition=false;
+				blnLoseCondition=false;
+			}
+
+			if(intPlayerCardValue1+intPlayerCardValue2+intPlayerCardValue3+intPlayerCardValue4+intPlayerCardValue5>21){
+				if(intPlayerCardValue1==11){
+					intPlayerCardValue1=1;
+				}else if(intPlayerCardValue2==11){
+					intPlayerCardValue2=1;
+				}else if(intPlayerCardValue3==11){
+					intPlayerCardValue3=1;
+				}else if(intPlayerCardValue4==11){
+					intPlayerCardValue4=1;
+				}else if(intPlayerCardValue5==11){
+					intPlayerCardValue5=1;
+				}else{
+					blnCondition=false;
+					blnLoseCondition=true;
+					System.out.println("lose");
+				}
+			}else if(intPlayerCardValue1+intPlayerCardValue2+intPlayerCardValue3+intPlayerCardValue4+intPlayerCardValue5==21){
+				blnCondition=false;
+				blnLoseCondition=false;
+			}
+			con.println(intPlayerCardValue1+intPlayerCardValue2+intPlayerCardValue3+intPlayerCardValue4+intPlayerCardValue5);
+			con.repaint();
 		}
+	
 		
 
 		//while(true){
