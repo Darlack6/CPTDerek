@@ -11,32 +11,33 @@ public class blackjack{
 	public static void main(String[] args){
 		Console con = new Console("blackjack",1280,720);
 		boolean blnContinousGame=true;
-		int intMenu=homescreen(con);
-		while(intMenu!=0){
+		int intMenu=homescreen(con); //fetch for menu choice
+		while(intMenu!=0){//until play game is selected, keep fetching
 			if(intMenu==0){
 				break;
-			}else if(intMenu==1){
-				slidetransition2(con);
+			}else if(intMenu==1){ //highscores creen
+				slidetransition2(con); //slide transition
 				con.repaint();
 				highscores(con);
 				intMenu=homescreen(con);
-			}else if(intMenu==2){
+			}else if(intMenu==2){ //exit 
 				con.closeConsole();
 			}
 		}
-		slidetransition1(con);
+		slidetransition1(con); //slide transition
 		con.repaint();
-		String strUsername=name(con);
-		if(strUsername.equals("strongertogether")){
+		String strUsername=name(con); //get user name
+		if(strUsername.equals("strongertogether")){ //Easter egg: if name is strongertogether, user gets 1500
 			intUserBalance=1500;
 		}
-		while(blnContinousGame==true && intUserBalance>0){
+		while(blnContinousGame==true && intUserBalance>0){ //only runs if continousgame is true and if the user's balance is greater than 0
 			con.clear();
+			//initializes variables
 			int intPlayerSum=0,intDealerSum=0,intdoubleDownCount=0,intDealerCounter=2,intCount=2;;
 			boolean blnCondition=true,blnLoseCondition=false,blnWinOffDeal=false,blnDealerBust=false;
 
-			int intUserBet=bet(con);
-			while(intUserBet>intUserBalance){
+			int intUserBet=bet(con); //gets user bet
+			while(intUserBet>intUserBalance){//if user enters a bet thats greater than their balance, refetch bet
 				BufferedImage imgInvalidBet=con.loadImage("../images/notEnoughMoney.png");
 				con.drawImage(imgInvalidBet,0,0);
 				con.repaint();
@@ -47,76 +48,73 @@ public class blackjack{
 				}
 				intUserBet=bet(con);
 			}
-
+			//initializes arrays
 			int[][] intArray = new int[52][3];
 			int[][] intPlayer = new int[6][2];
 			int[][] intDealer = new int[6][2];
-			intArray=shuffle(intArray);
-			for(int intCounter=0;intCounter<2;intCounter++){	
+			intArray=shuffle(intArray);//get the shuffled deck after bubble sort
+			for(int intCounter=0;intCounter<2;intCounter++){//deal cards
 				intPlayer[intCounter][0]=intArray[intCounter][0];
 				intPlayer[intCounter][1]=intArray[intCounter][1];
 				intDealer[intCounter][0]=intArray[intCounter+2][0];
 				intDealer[intCounter][1]=intArray[intCounter+2][1];
 			}
-			for(int i=0;i<52;i++){
+			for(int i=0;i<52;i++){ //testing: prints out cards to console
 				System.out.println(intArray[i][0]+"-"+intArray[i][1]+"-"+intArray[i][2]);
 			}
-
-			BufferedImage imgPlayerCard1=cardPictures(con,intPlayer[0][0],intPlayer[0][1]);
+			//set card images using function cardPictures()
+			BufferedImage imgPlayerCard1=cardPictures(con,intPlayer[0][0],intPlayer[0][1]); 
 			BufferedImage imgPlayerCard2=cardPictures(con,intPlayer[1][0],intPlayer[1][1]);
 			BufferedImage imgDealerCard1=cardPictures(con,intDealer[0][0],intDealer[0][1]);
 			BufferedImage imgBackside=con.loadImage("../cards/backside.png");
 			BufferedImage imgTable=con.loadImage("../images/tablescreen.png");
-			
-			con.setDrawColor(Color.BLACK);
-			con.fillRect(0,0,1280,720);
+			//draw table and cards
 			con.drawImage(imgTable,0,1);
-
 			con.drawImage(imgPlayerCard1,590,460);
 			con.drawImage(imgPlayerCard2,610,470);
 			con.drawImage(imgBackside,590,210);
 			con.drawImage(imgDealerCard1,610,220);
 			con.repaint();
-			
+			//establish card values 
 			int intPlayerCardValue1=cardValues(intPlayer[0][0]);
 			int intPlayerCardValue2=cardValues(intPlayer[1][0]);
 			int intPlayerCardValue3=0;
 			int intPlayerCardValue4=0;
 			int intPlayerCardValue5=0;
 			int intDealerCardValue1=cardValues(intDealer[0][0]);
-
+			//get total value of player's cards
 			intPlayerSum=intPlayerCardValue1+intPlayerCardValue2;
-			System.out.println(intPlayerCardValue1+" "+intPlayerCardValue2);
-		
-
+			//initializes player card images, set to null incase they are not used
 			BufferedImage imgPlayerCard3=null;
 			BufferedImage imgPlayerCard4=null;
 			BufferedImage imgPlayerCard5=null;
-
+			//prints the sum of player's and dealer's cards
 			con.clear();
 			con.println("Your sum: "+intPlayerSum);
 			con.println("Dealer's sum: "+intDealerCardValue1);
-
+			//While loop that runs until broken by blackjack,busting, or standing
 			while(blnCondition==true){
-				if(intPlayerCardValue1+intPlayerCardValue2==21){
+				if(intPlayerCardValue1+intPlayerCardValue2==21){ //blackjack
 					blnWinOffDeal=true;
 					blnLoseCondition=false;
-					break;
-				}else if(intPlayerCardValue1+intPlayerCardValue2==9||intPlayerCardValue1+intPlayerCardValue2==10||intPlayerCardValue1+intPlayerCardValue2==11){
-					if((intUserBalance/intUserBet)>=2){
-						intdoubleDownCount++;
+					break; //inorder to prevent other code from running
+				}else if(intPlayerCardValue1+intPlayerCardValue2==9||intPlayerCardValue1+intPlayerCardValue2==10||intPlayerCardValue1+intPlayerCardValue2==11){//double down
+					if((intUserBalance/intUserBet)>=2){//user is only able to double down if their bet is less than half their balance
+						intdoubleDownCount++;//prevents double down screen showing up after the first time
 						if(intdoubleDownCount==1){
 							con.sleep(1000);
 							int intChoice=doubleDown(con);
-							if(intChoice==89){//double down
+							if(intChoice==89){//[y], yes double down
+								//deals player their third card
 								intPlayer[intCount][0]=intArray[intCount+2][0];
 								intPlayer[intCount][1]=intArray[intCount+2][1];
 								imgPlayerCard3=cardPictures(con,intPlayer[intCount][0],intPlayer[intCount][1]);	
 								intPlayerCardValue3=cardValues(intPlayer[intCount][0]);
+								//resets player's sum
 								intPlayerSum=intPlayerSum+intPlayerCardValue3;
 								con.sleep(1000);
+								//redraw images with player's third card
 								con.drawImage(imgTable,0,0);
-								
 								con.drawImage(imgPlayerCard1,590,460); 
 								con.drawImage(imgPlayerCard2,610,470);
 								con.drawImage(imgPlayerCard3,630,460);
@@ -124,15 +122,16 @@ public class blackjack{
 								con.drawImage(imgBackside,590,210);
 								con.drawImage(imgDealerCard1,610,220);
 								con.repaint();
-								intUserBet=intUserBet*2;
-								System.out.println("bet"+intUserBet);
+								intUserBet=intUserBet*2; //double down bet
 								intCount++;
 								con.clear();
+								//reprints the sum of player's and dealer's cards
 								con.println("Your sum: "+intPlayerSum);
 								con.println("Dealer's sum: "+intDealerCardValue1);
 								con.repaint();
 								break;
-							}else if(intChoice==78){
+							}else if(intChoice==78){//[n], no double down
+								//removes prompt
 								con.sleep(1000);
 								con.drawImage(imgTable,0,1);
 								con.drawImage(imgPlayerCard1,590,460); 
@@ -144,9 +143,9 @@ public class blackjack{
 						}
 					}
 				}
+				//gets user choice
 				int intKeypress = con.getKey();
-
-				if(intKeypress==72){
+				if(intKeypress==72){//[h], hit
 					intPlayer[intCount][0]=intArray[intCount+2][0];
 					intPlayer[intCount][1]=intArray[intCount+2][1];
 					if(intCount==2){
