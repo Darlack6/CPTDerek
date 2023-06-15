@@ -1,3 +1,6 @@
+//Program Name: Blackjack
+//Programmer name: Derek Lien
+//Version number: RC01
 import arc.*;
 import java.awt.image.BufferedImage;
 import java.awt.Font;
@@ -6,31 +9,44 @@ import java.awt.Color;
 public class blackjack{
 	static int intUserBalance=1000;
 	public static void main(String[] args){
-		Console con = new Console(1280,720);
+		Console con = new Console("blackjack",1280,720);
 		boolean blnContinousGame=true;
 		int intMenu=homescreen(con);
 		while(intMenu!=0){
 			if(intMenu==0){
 				break;
 			}else if(intMenu==1){
+				slidetransition2(con);
+				con.repaint();
 				highscores(con);
 				intMenu=homescreen(con);
 			}else if(intMenu==2){
 				con.closeConsole();
 			}
 		}
-		while(blnContinousGame==true){
+		slidetransition1(con);
+		con.repaint();
+		String strUsername=name(con);
+		if(strUsername.equals("strongertogether")){
+			intUserBalance=1500;
+		}
+		while(blnContinousGame==true && intUserBalance>0){
 			con.clear();
-			int intCount=2;
-			int intDealerCounter=2;
-			int intPlayerSum=0;
-			int intDealerSum=0;
-			boolean blnCondition=true;
-			boolean blnLoseCondition=false;
-			boolean blnWinOffDeal=false;
-			boolean blnDealerBust=false;
+			int intPlayerSum=0,intDealerSum=0,intdoubleDownCount=0,intDealerCounter=2,intCount=2;;
+			boolean blnCondition=true,blnLoseCondition=false,blnWinOffDeal=false,blnDealerBust=false;
 
 			int intUserBet=bet(con);
+			while(intUserBet>intUserBalance){
+				BufferedImage imgInvalidBet=con.loadImage("../images/notEnoughMoney.png");
+				con.drawImage(imgInvalidBet,0,0);
+				con.repaint();
+				char chrCurrentKey=con.getChar();
+				while(chrCurrentKey!='c'){
+					chrCurrentKey=con.getChar();
+					con.repaint();
+				}
+				intUserBet=bet(con);
+			}
 
 			int[][] intArray = new int[52][3];
 			int[][] intPlayer = new int[6][2];
@@ -45,9 +61,6 @@ public class blackjack{
 			for(int i=0;i<52;i++){
 				System.out.println(intArray[i][0]+"-"+intArray[i][1]+"-"+intArray[i][2]);
 			}
-			for(int intCounter=0;intCounter<2;intCounter++){
-				con.println(intPlayer[intCounter][0]+"-"+intPlayer[intCounter][1]+"\n"+intDealer[intCounter][0]+"-"+intDealer[intCounter][1]);
-			}
 
 			BufferedImage imgPlayerCard1=cardPictures(con,intPlayer[0][0],intPlayer[0][1]);
 			BufferedImage imgPlayerCard2=cardPictures(con,intPlayer[1][0],intPlayer[1][1]);
@@ -59,7 +72,7 @@ public class blackjack{
 			con.fillRect(0,0,1280,720);
 			con.drawImage(imgTable,0,1);
 
-			con.drawImage(imgPlayerCard1,590,460); //540 and 660
+			con.drawImage(imgPlayerCard1,590,460);
 			con.drawImage(imgPlayerCard2,610,470);
 			con.drawImage(imgBackside,590,210);
 			con.drawImage(imgDealerCard1,610,220);
@@ -70,6 +83,8 @@ public class blackjack{
 			int intPlayerCardValue3=0;
 			int intPlayerCardValue4=0;
 			int intPlayerCardValue5=0;
+			int intDealerCardValue1=cardValues(intDealer[0][0]);
+
 			intPlayerSum=intPlayerCardValue1+intPlayerCardValue2;
 			System.out.println(intPlayerCardValue1+" "+intPlayerCardValue2);
 		
@@ -78,14 +93,58 @@ public class blackjack{
 			BufferedImage imgPlayerCard4=null;
 			BufferedImage imgPlayerCard5=null;
 
+			con.clear();
+			con.println("Your sum: "+intPlayerSum);
+			con.println("Dealer's sum: "+intDealerCardValue1);
+
 			while(blnCondition==true){
 				if(intPlayerCardValue1+intPlayerCardValue2==21){
 					blnWinOffDeal=true;
 					blnLoseCondition=false;
 					break;
+				}else if(intPlayerCardValue1+intPlayerCardValue2==9||intPlayerCardValue1+intPlayerCardValue2==10||intPlayerCardValue1+intPlayerCardValue2==11){
+					if((intUserBalance/intUserBet)>=2){
+						intdoubleDownCount++;
+						if(intdoubleDownCount==1){
+							con.sleep(1000);
+							int intChoice=doubleDown(con);
+							if(intChoice==89){//double down
+								intPlayer[intCount][0]=intArray[intCount+2][0];
+								intPlayer[intCount][1]=intArray[intCount+2][1];
+								imgPlayerCard3=cardPictures(con,intPlayer[intCount][0],intPlayer[intCount][1]);	
+								intPlayerCardValue3=cardValues(intPlayer[intCount][0]);
+								intPlayerSum=intPlayerSum+intPlayerCardValue3;
+								con.sleep(1000);
+								con.drawImage(imgTable,0,0);
+								
+								con.drawImage(imgPlayerCard1,590,460); 
+								con.drawImage(imgPlayerCard2,610,470);
+								con.drawImage(imgPlayerCard3,630,460);
+
+								con.drawImage(imgBackside,590,210);
+								con.drawImage(imgDealerCard1,610,220);
+								con.repaint();
+								intUserBet=intUserBet*2;
+								System.out.println("bet"+intUserBet);
+								intCount++;
+								con.clear();
+								con.println("Your sum: "+intPlayerSum);
+								con.println("Dealer's sum: "+intDealerCardValue1);
+								con.repaint();
+								break;
+							}else if(intChoice==78){
+								con.sleep(1000);
+								con.drawImage(imgTable,0,1);
+								con.drawImage(imgPlayerCard1,590,460); 
+								con.drawImage(imgPlayerCard2,610,470);
+								con.drawImage(imgBackside,590,210);
+								con.drawImage(imgDealerCard1,610,220);
+								con.repaint();
+							}
+						}
+					}
 				}
 				int intKeypress = con.getKey();
-				System.out.println(intKeypress);
 
 				if(intKeypress==72){
 					intPlayer[intCount][0]=intArray[intCount+2][0];
@@ -103,7 +162,6 @@ public class blackjack{
 						con.drawImage(imgBackside,590,210);
 						con.drawImage(imgDealerCard1,610,220);
 
-						System.out.println(intPlayerCardValue3);
 						con.repaint();
 					}else if(intCount==3){
 						imgPlayerCard4=cardPictures(con,intPlayer[intCount][0],intPlayer[intCount][1]);
@@ -174,7 +232,9 @@ public class blackjack{
 					blnCondition=false;
 					blnLoseCondition=false;
 				}
-				con.println(intPlayerSum);
+				con.clear();
+				con.println("Your sum: "+intPlayerSum);
+				con.println("Dealer's sum: "+intDealer[0][0]);
 				con.repaint();
 			}
 			
@@ -186,21 +246,47 @@ public class blackjack{
 				intUserBet=blackjackScreen(con,intUserBet, blnWinOffDeal);
 				blnContinousGame=playAgainScreen(con,intUserBet,blnLoseCondition,blnContinousGame);
 			}else if(intCount==5){
-				intUserBet=Fivecards(con,intUserBet);
+				intUserBet=fiveCards(con,intUserBet);
 				blnContinousGame=playAgainScreen(con,intUserBet,blnLoseCondition,blnContinousGame);
 			}else if(blnLoseCondition==false){//dealer turn
 				BufferedImage imgDealerCard2=cardPictures(con,intDealer[1][0],intDealer[1][1]);
 				BufferedImage imgDealerCard3=null;
 				BufferedImage imgDealerCard4=null;
 				BufferedImage imgDealerCard5=null;
-				int intDealerCardValue1=cardValues(intDealer[0][0]);
 				int intDealerCardValue2=cardValues(intDealer[1][0]);
 				intDealerSum=intDealerCardValue1+intDealerCardValue2;
 				int intDealerCardValue3=0;
 				int intDealerCardValue4=0;
 				int intDealerCardValue5=0;
+	
+				con.drawImage(imgTable,0,0);
 				con.drawImage(imgDealerCard2,590,210);
 				con.drawImage(imgDealerCard1,610,220);
+
+				if(intCount==2){
+					con.drawImage(imgPlayerCard1,590,460); //540 and 660
+					con.drawImage(imgPlayerCard2,610,470);
+				}else if(intCount==3){
+					con.drawImage(imgPlayerCard1,590,460); 
+					con.drawImage(imgPlayerCard2,610,470);
+					con.drawImage(imgPlayerCard3,630,460);
+				}else if(intCount==4){
+					con.drawImage(imgPlayerCard1,570,460); 
+					con.drawImage(imgPlayerCard2,590,470);
+					con.drawImage(imgPlayerCard3,610,460);
+					con.drawImage(imgPlayerCard4,630,470);
+				}else if(intCount==5){					
+					con.drawImage(imgPlayerCard1,570,460); 
+					con.drawImage(imgPlayerCard2,590,470);
+					con.drawImage(imgPlayerCard3,610,460);
+					con.drawImage(imgPlayerCard4,630,470);
+					con.drawImage(imgPlayerCard5,650,460);
+				}
+				con.repaint();
+
+				con.clear();
+				con.println("Your sum: "+intPlayerSum);
+				con.println("Dealer's sum: "+intDealerSum);
 				
 				while(intDealerSum<17){
 					con.sleep(1000);
@@ -324,8 +410,14 @@ public class blackjack{
 							break;
 						}
 					}	
+					con.clear();
+					con.println("Your sum: "+intPlayerSum);
+					con.println("Dealer's sum: "+intDealerSum);
+					con.repaint();
 				}
-				System.out.println(intDealerSum);
+				con.clear();
+				con.println("Your sum: "+intPlayerSum);
+				con.println("Dealer's sum: "+intDealerSum);
 				con.repaint();
 				con.sleep(1000);
 				if(blnDealerBust==true){	
@@ -355,8 +447,14 @@ public class blackjack{
 				}
 			}
 			System.out.println(blnContinousGame);
+			if(intUserBalance==0){
+				outOfMoney(con);
+				sortHighscore(con,intUserBalance,strUsername);
+				con.closeConsole();
+			}
 			if(blnContinousGame==false){
 				gameOver(con);
+				sortHighscore(con,intUserBalance,strUsername);
 				con.closeConsole();
 			}
 		}
@@ -401,15 +499,14 @@ public class blackjack{
 	}
 	
 	public static void highscores(Console con){
-		BufferedImage imgHighscoreScreen = con.loadImage("../images/highscore.png");
+		boolean blnCondition=true;
 		Font fntBaron=con.loadFont("../fonts/BaronNeue-Regular.ttf",30);
 		con.setDrawFont(fntBaron);
 		TextInputFile txtHighscores = new TextInputFile("highscores.txt");
-		con.drawImage(imgHighscoreScreen,0,0);
 		
 		int intCounter=1;
 		int inty=150;
-		while(txtHighscores.eof()==false){
+		for(int i=0;i<7;i++){
 			String stringHighscore=txtHighscores.readLine();
 			int intHighscore=txtHighscores.readInt();
 			
@@ -423,18 +520,28 @@ public class blackjack{
 			inty=inty+65;
 		}
 		con.repaint();
-		while(true){
+		while(blnCondition==true){
 			int intKeypress = con.getKey();
 			//System.out.println(intKeypress);
 			if(intKeypress==27){
-				break;
+				txtHighscores.close();
+				blnCondition=false;
 			}
 			con.sleep(33);
 			con.repaint();
 		}
 	}
 
+	public static String name(Console con){
+		Font fntBaron=con.loadFont("../fonts/BaronNeue-Regular.ttf",40);
+		con.setTextFont(fntBaron);	
+		con.print("\n\n\n\n\n\n\n\n\n                                         ");
+		String strUsername=con.readLine();
+		return strUsername;
+	}
+
 	public static int bet(Console con){
+		con.clear();
 		int intBet=-5;
 		BufferedImage imgBetScreen=con.loadImage("../images/betscreen.png");
 		con.drawImage(imgBetScreen,0,0);
@@ -447,6 +554,23 @@ public class blackjack{
 		}
 		con.clear();
 		return intBet;
+	}
+
+	public static int doubleDown(Console con){
+		BufferedImage imgDoubleDown=con.loadImage("../images/doubleDownScreen.png");
+		con.drawImage(imgDoubleDown,0,0);
+		con.repaint();
+		int intKeypress=0;
+		while(true){
+			intKeypress=con.getKey();
+			if(intKeypress==89){
+				break;
+			}else if(intKeypress==78){
+				break;
+			}
+		}
+		System.out.println(intKeypress);
+		return intKeypress;
 	}
 	
 	public static int bustScreen(Console con,int intBet){
@@ -478,7 +602,7 @@ public class blackjack{
 		}
 		return intBet;
 	}
-	public static int Fivecards(Console con,int intBet){
+	public static int fiveCards(Console con,int intBet){
 		int intKeypress=0;
 		con.sleep(1000);
 		BufferedImage img5cards=con.loadImage("../images/5cardScreen.png");
@@ -566,7 +690,7 @@ public static int dealerBust(Console con,int intBet){
 		if(intBet==0){
 			System.out.println("tie");
 		}else if(blnCondition==true){
-			con.drawImage(imgDown,900,395);
+			con.drawImage(imgDown,920,395);
 		}else if(blnCondition==false){
 			con.drawImage(imgUp,920,395);
 		}
@@ -589,10 +713,81 @@ public static int dealerBust(Console con,int intBet){
 		BufferedImage imgEnd=con.loadImage("../images/endScreen.png");
 		con.drawImage(imgEnd,0,0);
 		con.clear();
-		con.println("\n\n\n\n\n                 ending balance: $"+intUserBalance);
+		con.println("\n\n\n\n\n                  ending balance: $"+intUserBalance);
 		while(chrKeypress!='e'){
 			chrKeypress=con.getChar();
 		}
+	}
+	public static void outOfMoney(Console con){
+		char chrKeypress=' ';
+		BufferedImage imgOutofMoney=con.loadImage("../images/outOfMoneyScreen.png");
+		con.drawImage(imgOutofMoney,0,0);
+		con.clear();
+		while(chrKeypress!='q'){
+			chrKeypress=con.getChar();
+		}
+	}
+	public static void sortHighscore(Console con,int intBet,String strName){
+		TextInputFile txtHighscores = new TextInputFile("highscores.txt");
+		int intCounter=0;
+		int intCount=0;
+		while(txtHighscores.eof()==false){
+			String strHighscores=txtHighscores.readLine();
+			int intHighscores=txtHighscores.readInt();
+			intCount++;
+		}
+		txtHighscores.close();
+		txtHighscores = new TextInputFile("highscores.txt");
+
+		String [] strArray= new String[intCount+1];
+		int [] intArray = new int[intCount+1];
+		
+		while(txtHighscores.eof()==false){
+			String strHighscore=txtHighscores.readLine();
+			int intHighscore=txtHighscores.readInt();
+			strArray[intCounter]=strHighscore;
+			intArray[intCounter]=intHighscore;
+			intCounter++;
+		}
+		txtHighscores.close();
+		System.out.println("before sort");
+
+		for(int i=0;i<7;i++){
+			System.out.println(strArray[i]);
+			System.out.println(intArray[i]);
+		}
+		intArray[intCount]=intBet;
+		strArray[intCount]=strName;
+		
+		for(int intCounter2=0;intCounter2<intCount+1;intCounter2++){
+			for(int intCounter3=0;intCounter3<intCount-intCounter2;intCounter3++){
+				int intTemp;
+				String strTemp;
+				int intCurrent=intArray[intCounter3];
+				int intNext=intArray[intCounter3+1];
+
+				if(intNext>intCurrent){
+					intTemp=intArray[intCounter3+1];
+					intArray[intCounter3+1]=intArray[intCounter3];
+					intArray[intCounter3]=intTemp;
+
+					strTemp=strArray[intCounter3+1];
+					strArray[intCounter3+1]=strArray[intCounter3];
+					strArray[intCounter3]=strTemp;
+				}
+			}
+		}
+		System.out.println("After sort");
+		for(int i=0;i<intCount+1;i++){
+			System.out.println(strArray[i]);
+			System.out.println(intArray[i]);
+		}
+		TextOutputFile txtScores = new TextOutputFile("highscores.txt");
+		for(int i=0;i<intCount+1;i++){
+			txtScores.println(strArray[i]);
+			txtScores.println(intArray[i]);
+		}
+		txtScores.close();
 	}
 	public static int[][] shuffle(int intCards[][]){
 		for(int i=0;i < 52;i++){
@@ -784,5 +979,47 @@ public static int dealerBust(Console con,int intBet){
 			}	
 		}
 	return imgCard;
+	}
+	public static void slidetransition1(Console con){
+		//initializes variables
+		int intcounter;
+		BufferedImage imgNameScreen = con.loadImage("../images/nameScreen.png");
+		con.clear();
+
+		con.setDrawColor(new Color(0,0,0)); //custom RGB color
+		con.clear();
+		//draws a fill rectangle and moves its x position postively, creating a black rectangle to slide across the screen 
+		for(intcounter=0;intcounter<1285;intcounter=intcounter+4){
+			con.fillRect(0,0,intcounter,720);
+			con.repaint();
+			con.sleep(1);
+		}for(intcounter=0;intcounter<1285;intcounter=intcounter+6){
+			con.drawImage(imgNameScreen,0,0);
+			con.fillRect(intcounter,0,1280,720);
+			System.out.println(intcounter);
+			con.repaint();
+			con.sleep(1);
+		}
+	}
+	public static void slidetransition2(Console con){
+		//initializes variables
+		int intcounter;
+		BufferedImage imgHighscoreScreen = con.loadImage("../images/highscore.png");
+		con.clear();
+
+		con.setDrawColor(new Color(0,0,0)); //custom RGB color
+		con.clear();
+		//draws a fill rectangle and moves its x position postively, creating a black rectangle to slide across the screen 
+		for(intcounter=0;intcounter<1285;intcounter=intcounter+4){
+			con.fillRect(0,0,intcounter,720);
+			con.repaint();
+			con.sleep(1);
+		}for(intcounter=0;intcounter<1285;intcounter=intcounter+6){
+			con.drawImage(imgHighscoreScreen,0,0);
+			con.fillRect(intcounter,0,1280,720);
+			System.out.println(intcounter);
+			con.repaint();
+			con.sleep(1);
+		}
 	}
 }

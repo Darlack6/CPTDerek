@@ -6,361 +6,432 @@ import java.awt.Color;
 public class workingfile{
 	static int intUserBalance=1000;
 	public static void main(String[] args){
-		Console con = new Console(1280,720);
+		Console con = new Console("blackjack",1280,720);
+		boolean blnContinousGame=true;
 		int intMenu=homescreen(con);
-		int intCount=2;
-		int intDealerCounter=2;
-		int intPlayerSum=0;
-		int intDealerSum=0;
-		boolean blnCondition=true;
-		boolean blnLoseCondition=false;
-		boolean blnWinOffDeal=false;
-		boolean bln5draw=false;
-		boolean blnDealerBust=false;
 		while(intMenu!=0){
 			if(intMenu==0){
 				break;
 			}else if(intMenu==1){
+				slidetransition2(con);
+				con.repaint();
 				highscores(con);
 				intMenu=homescreen(con);
 			}else if(intMenu==2){
 				con.closeConsole();
 			}
 		}
-
-		int intUserBet=bet(con);
-
-		int[][] intArray = new int[52][3];
-		int[][] intPlayer = new int[6][2];
-		int[][] intDealer = new int[6][2];
-		intArray=shuffle(intArray);
-		for(int intCounter=0;intCounter<2;intCounter++){	
-			intPlayer[intCounter][0]=intArray[intCounter][0];
-			intPlayer[intCounter][1]=intArray[intCounter][1];
-			intDealer[intCounter][0]=intArray[intCounter+2][0];
-			intDealer[intCounter][1]=intArray[intCounter+2][1];
-		}
-		for(int i=0;i<52;i++){
-			System.out.println(intArray[i][0]+"-"+intArray[i][1]+"-"+intArray[i][2]);
-		}
-		for(int intCounter=0;intCounter<2;intCounter++){
-			con.println(intPlayer[intCounter][0]+"-"+intPlayer[intCounter][1]+"\n"+intDealer[intCounter][0]+"-"+intDealer[intCounter][1]);
-		}
-
-		BufferedImage imgPlayerCard1=cardPictures(con,intPlayer[0][0],intPlayer[0][1]);
-		BufferedImage imgPlayerCard2=cardPictures(con,intPlayer[1][0],intPlayer[1][1]);
-		BufferedImage imgDealerCard1=cardPictures(con,intDealer[0][0],intDealer[0][1]);
-		BufferedImage imgBackside=con.loadImage("../cards/backside.png");
-		BufferedImage imgTable=con.loadImage("../images/tablescreen.png");
-		
-		con.setDrawColor(Color.BLACK);
-		con.fillRect(0,0,1280,720);
-		con.drawImage(imgTable,0,1);
-
-		con.drawImage(imgPlayerCard1,590,460); //540 and 660
-		con.drawImage(imgPlayerCard2,610,470);
-		con.drawImage(imgBackside,590,210);
-		con.drawImage(imgDealerCard1,610,220);
+		slidetransition1(con);
 		con.repaint();
-		
-		int intPlayerCardValue1=cardValues(intPlayer[0][0]);
-		int intPlayerCardValue2=cardValues(intPlayer[1][0]);
-		int intPlayerCardValue3=0;
-		int intPlayerCardValue4=0;
-		int intPlayerCardValue5=0;
-		intPlayerSum=intPlayerCardValue1+intPlayerCardValue2;
-		System.out.println(intPlayerCardValue1+" "+intPlayerCardValue2);
-	
-
-		BufferedImage imgPlayerCard3=null;
-		BufferedImage imgPlayerCard4=null;
-		BufferedImage imgPlayerCard5=null;
-
-		while(blnCondition==true){
-			if(intPlayerCardValue1+intPlayerCardValue2==21){
-				blnWinOffDeal=true;
-				blnLoseCondition=false;
-				break;
-			}
-			int intKeypress = con.getKey();
-			System.out.println(intKeypress);
-
-			if(intKeypress==72){
-				intPlayer[intCount][0]=intArray[intCount+2][0];
-				intPlayer[intCount][1]=intArray[intCount+2][1];
-				if(intCount==2){
-					imgPlayerCard3=cardPictures(con,intPlayer[intCount][0],intPlayer[intCount][1]);	
-					intPlayerCardValue3=cardValues(intPlayer[intCount][0]);
-					intPlayerSum=intPlayerSum+intPlayerCardValue3;
-					con.drawImage(imgTable,0,0);
-					
-					con.drawImage(imgPlayerCard1,590,460); 
-					con.drawImage(imgPlayerCard2,610,470);
-					con.drawImage(imgPlayerCard3,630,460);
-
-					con.drawImage(imgBackside,590,210);
-					con.drawImage(imgDealerCard1,610,220);
-
-					System.out.println(intPlayerCardValue3);
-					con.repaint();
-				}else if(intCount==3){
-					imgPlayerCard4=cardPictures(con,intPlayer[intCount][0],intPlayer[intCount][1]);
-					intPlayerCardValue4=cardValues(intPlayer[intCount][0]);
-					intPlayerSum=intPlayerSum+intPlayerCardValue4;
-					con.drawImage(imgTable,0,0);
-					
-					con.drawImage(imgPlayerCard1,570,460); 
-					con.drawImage(imgPlayerCard2,590,470);
-					con.drawImage(imgPlayerCard3,610,460);
-					con.drawImage(imgPlayerCard4,630,470);
-
-					con.drawImage(imgBackside,590,210);
-					con.drawImage(imgDealerCard1,610,220);
-					
-					con.repaint();
-				}else if(intCount==4){
-					imgPlayerCard5=cardPictures(con,intPlayer[intCount][0],intPlayer[intCount][1]);
-					intPlayerCardValue5=cardValues(intPlayer[intCount][0]);
-					intPlayerSum=intPlayerSum+intPlayerCardValue5;
-					con.drawImage(imgTable,0,0);
-					
-					con.drawImage(imgPlayerCard1,570,460); 
-					con.drawImage(imgPlayerCard2,590,470);
-					con.drawImage(imgPlayerCard3,610,460);
-					con.drawImage(imgPlayerCard4,630,470);
-					con.drawImage(imgPlayerCard5,650,460);
-
-					con.drawImage(imgBackside,590,210);
-					con.drawImage(imgDealerCard1,610,220);
-					
-					con.repaint();
-				}
-				intCount++;
-			}else if(intKeypress==83){
-				blnCondition=false;
-				blnLoseCondition=false;
-				System.out.println(intPlayerCardValue1+" "+intPlayerCardValue2+" "+intPlayerCardValue3+" "+intPlayerCardValue4+" "+intPlayerCardValue5);
-			}
-
-			if(intCount==5){
-				blnCondition=false;
-				blnLoseCondition=false;
-			}
-
-			if(intPlayerSum>21){
-				if(intPlayerCardValue1==11){
-					intPlayerCardValue1=1;
-					intPlayerSum=intPlayerCardValue1+intPlayerCardValue2+intPlayerCardValue3+intPlayerCardValue4+intPlayerCardValue5;
-				}else if(intPlayerCardValue2==11){
-					intPlayerCardValue2=1;
-					intPlayerSum=intPlayerCardValue1+intPlayerCardValue2+intPlayerCardValue3+intPlayerCardValue4+intPlayerCardValue5;
-				}else if(intPlayerCardValue3==11){
-					intPlayerCardValue3=1;
-					intPlayerSum=intPlayerCardValue1+intPlayerCardValue2+intPlayerCardValue3+intPlayerCardValue4+intPlayerCardValue5;
-				}else if(intPlayerCardValue4==11){
-					intPlayerCardValue4=1;
-					intPlayerSum=intPlayerCardValue1+intPlayerCardValue2+intPlayerCardValue3+intPlayerCardValue4+intPlayerCardValue5;
-				}else if(intPlayerCardValue5==11){
-					intPlayerCardValue5=1;
-					intPlayerSum=intPlayerCardValue1+intPlayerCardValue2+intPlayerCardValue3+intPlayerCardValue4+intPlayerCardValue5;
-				}else{
-					blnCondition=false;
-					blnLoseCondition=true;
-					System.out.println("lose");
-				}
-			}if(intPlayerSum==21){
-				blnCondition=false;
-				blnLoseCondition=false;
-			}
-			con.println(intPlayerSum);
-			con.repaint();
+		String strUsername=name(con);
+		if(strUsername.equals("strongertogether")){
+			intUserBalance=1500;
 		}
-		
-		if(blnLoseCondition==true){
-			intUserBet=bustScreen(con,intUserBet);
-			System.out.println(intUserBet);
-			playAgainScreen(con,intUserBet,blnLoseCondition);
-		}else if(intPlayerSum==21){
-			intUserBet=blackjackScreen(con,intUserBet, blnWinOffDeal);
-			playAgainScreen(con,intUserBet,blnLoseCondition);
-		}else if(intCount==5){
-			intUserBet=Fivecards(con,intUserBet);
-			playAgainScreen(con,intUserBet,blnLoseCondition);
-		}else if(blnLoseCondition==false){//dealer turn
-			BufferedImage imgDealerCard2=cardPictures(con,intDealer[1][0],intDealer[1][1]);
-			BufferedImage imgDealerCard3=null;
-			BufferedImage imgDealerCard4=null;
-			BufferedImage imgDealerCard5=null;
-			int intDealerCardValue1=cardValues(intDealer[0][0]);
-			int intDealerCardValue2=cardValues(intDealer[1][0]);
-			intDealerSum=intDealerCardValue1+intDealerCardValue2;
-			int intDealerCardValue3=0;
-			int intDealerCardValue4=0;
-			int intDealerCardValue5=0;
-			con.drawImage(imgDealerCard2,590,210);
-			con.drawImage(imgDealerCard1,610,220);
+		while(blnContinousGame==true && intUserBalance>0){
+			con.clear();
+			int intPlayerSum=0,intDealerSum=0,intdoubleDownCount=0,intDealerCounter=2,intCount=2;;
+			boolean blnCondition=true,blnLoseCondition=false,blnWinOffDeal=false,blnDealerBust=false;
+
+			int intUserBet=bet(con);
+			while(intUserBet>intUserBalance){
+				BufferedImage imgInvalidBet=con.loadImage("../images/notEnoughMoney.png");
+				con.drawImage(imgInvalidBet,0,0);
+				con.repaint();
+				char chrCurrentKey=con.getChar();
+				while(chrCurrentKey!='c'){
+					chrCurrentKey=con.getChar();
+					con.repaint();
+				}
+				intUserBet=bet(con);
+			}
+
+			int[][] intArray = new int[52][3];
+			int[][] intPlayer = new int[6][2];
+			int[][] intDealer = new int[6][2];
+			intArray=shuffle(intArray);
+			for(int intCounter=0;intCounter<2;intCounter++){	
+				intPlayer[intCounter][0]=intArray[intCounter][0];
+				intPlayer[intCounter][1]=intArray[intCounter][1];
+				intDealer[intCounter][0]=intArray[intCounter+2][0];
+				intDealer[intCounter][1]=intArray[intCounter+2][1];
+			}
+			for(int i=0;i<52;i++){
+				System.out.println(intArray[i][0]+"-"+intArray[i][1]+"-"+intArray[i][2]);
+			}
+
+			BufferedImage imgPlayerCard1=cardPictures(con,intPlayer[0][0],intPlayer[0][1]);
+			BufferedImage imgPlayerCard2=cardPictures(con,intPlayer[1][0],intPlayer[1][1]);
+			BufferedImage imgDealerCard1=cardPictures(con,intDealer[0][0],intDealer[0][1]);
+			BufferedImage imgBackside=con.loadImage("../cards/backside.png");
+			BufferedImage imgTable=con.loadImage("../images/tablescreen.png");
 			
-			while(intDealerSum<17){
-				con.sleep(1000);
-				intDealer[intDealerCounter][0]=intArray[intCount+intDealerCounter][0];
-				intDealer[intDealerCounter][1]=intArray[intCount+intDealerCounter][1];
-				if(intDealerCounter==2){
-					imgDealerCard3=cardPictures(con,intDealer[intDealerCounter][0],intDealer[intDealerCounter][1]);	
-					intDealerCardValue3=cardValues(intDealer[intDealerCounter][0]);
-					intDealerSum=intDealerSum+intDealerCardValue3;
-					con.drawImage(imgTable,0,0);
+			con.setDrawColor(Color.BLACK);
+			con.fillRect(0,0,1280,720);
+			con.drawImage(imgTable,0,1);
 
-					if(intCount==2){
-						con.drawImage(imgPlayerCard1,590,460); //540 and 660
-						con.drawImage(imgPlayerCard2,610,470);
-					}else if(intCount==3){
-						con.drawImage(imgPlayerCard1,590,460); 
-						con.drawImage(imgPlayerCard2,610,470);
-						con.drawImage(imgPlayerCard3,630,460);
-					}else if(intCount==4){
-						con.drawImage(imgPlayerCard1,570,460); 
-						con.drawImage(imgPlayerCard2,590,470);
-						con.drawImage(imgPlayerCard3,610,460);
-						con.drawImage(imgPlayerCard4,630,470);
-					}else if(intCount==5){					
-						con.drawImage(imgPlayerCard1,570,460); 
-						con.drawImage(imgPlayerCard2,590,470);
-						con.drawImage(imgPlayerCard3,610,460);
-						con.drawImage(imgPlayerCard4,630,470);
-						con.drawImage(imgPlayerCard5,650,460);
-					}
-
-					con.drawImage(imgDealerCard2,590,210);
-					con.drawImage(imgDealerCard1,610,220);
-					con.drawImage(imgDealerCard3,630,210);
-
-					con.repaint();
-				}else if(intDealerCounter==3){
-					imgDealerCard4=cardPictures(con,intDealer[intDealerCounter][0],intDealer[intDealerCounter][1]);
-					intDealerCardValue4=cardValues(intDealer[intDealerCounter][0]);
-					intDealerSum=intDealerSum+intDealerCardValue4;
-					con.drawImage(imgTable,0,0);
-
-					if(intCount==2){
-						con.drawImage(imgPlayerCard1,590,460); //540 and 660
-						con.drawImage(imgPlayerCard2,610,470);
-					}else if(intCount==3){
-						con.drawImage(imgPlayerCard1,590,460); 
-						con.drawImage(imgPlayerCard2,610,470);
-						con.drawImage(imgPlayerCard3,630,460);
-					}else if(intCount==4){
-						con.drawImage(imgPlayerCard1,570,460); 
-						con.drawImage(imgPlayerCard2,590,470);
-						con.drawImage(imgPlayerCard3,610,460);
-						con.drawImage(imgPlayerCard4,630,470);
-					}else if(intCount==5){					
-						con.drawImage(imgPlayerCard1,570,460); 
-						con.drawImage(imgPlayerCard2,590,470);
-						con.drawImage(imgPlayerCard3,610,460);
-						con.drawImage(imgPlayerCard4,630,470);
-						con.drawImage(imgPlayerCard5,650,460);
-					}
-					con.drawImage(imgDealerCard2,590,210);
-					con.drawImage(imgDealerCard1,610,220);
-					con.drawImage(imgDealerCard3,630,210);
-					con.drawImage(imgDealerCard4,650,220);
-					
-					con.repaint();
-				}else if(intDealerCounter==4){
-					imgDealerCard5=cardPictures(con,intDealer[intDealerCounter][0],intDealer[intDealerCounter][1]);
-					intDealerCardValue5=cardValues(intDealer[intDealerCounter][0]);
-					intDealerSum=intDealerSum+intDealerCardValue5;
-					con.drawImage(imgTable,0,0);
-
-					if(intCount==2){
-						con.drawImage(imgPlayerCard1,590,460); //540 and 660
-						con.drawImage(imgPlayerCard2,610,470);
-					}else if(intCount==3){
-						con.drawImage(imgPlayerCard1,590,460); 
-						con.drawImage(imgPlayerCard2,610,470);
-						con.drawImage(imgPlayerCard3,630,460);
-					}else if(intCount==4){
-						con.drawImage(imgPlayerCard1,570,460); 
-						con.drawImage(imgPlayerCard2,590,470);
-						con.drawImage(imgPlayerCard3,610,460);
-						con.drawImage(imgPlayerCard4,630,470);
-					}else if(intCount==5){					
-						con.drawImage(imgPlayerCard1,570,460); 
-						con.drawImage(imgPlayerCard2,590,470);
-						con.drawImage(imgPlayerCard3,610,460);
-						con.drawImage(imgPlayerCard4,630,470);
-						con.drawImage(imgPlayerCard5,650,460);
-					}
-					con.drawImage(imgDealerCard2,590,210);
-					con.drawImage(imgDealerCard1,610,220);
-					con.drawImage(imgDealerCard3,630,210);
-					con.drawImage(imgDealerCard4,650,220);
-					con.drawImage(imgDealerCard5,670,210);
-					
-					con.repaint();
-					
-				}
-				intDealerCounter++;
-				if(intDealerSum>21){
-					if(intDealerCardValue1==11){
-						intDealerCardValue1=1;
-						intDealerSum=intDealerCardValue1+intDealerCardValue2+intDealerCardValue3+intDealerCardValue4+intDealerCardValue5;
-					}else if(intDealerCardValue2==11){
-						intDealerCardValue2=1;
-						intDealerSum=intDealerCardValue1+intDealerCardValue2+intDealerCardValue3+intDealerCardValue4+intDealerCardValue5;
-					}else if(intDealerCardValue3==11){
-						intDealerCardValue3=1;
-						intDealerSum=intDealerCardValue1+intDealerCardValue2+intDealerCardValue3+intDealerCardValue4+intDealerCardValue5;
-					}else if(intDealerCardValue4==11){
-						intDealerCardValue4=1;
-						intDealerSum=intDealerCardValue1+intDealerCardValue2+intDealerCardValue3+intDealerCardValue4+intDealerCardValue5;
-					}else if(intDealerCardValue5==11){
-						intDealerCardValue5=1;
-						intDealerSum=intDealerCardValue1+intDealerCardValue2+intDealerCardValue3+intDealerCardValue4+intDealerCardValue5;
-					}else{
-						blnDealerBust=true;
-						break;
-					}
-				}	
-			}
-			System.out.println(intDealerSum);
+			con.drawImage(imgPlayerCard1,590,460);
+			con.drawImage(imgPlayerCard2,610,470);
+			con.drawImage(imgBackside,590,210);
+			con.drawImage(imgDealerCard1,610,220);
 			con.repaint();
-			con.sleep(1000);
-			if(blnDealerBust==true){	
-				blnLoseCondition=false;		
-				System.out.println("Win off db"+intDealerSum+" "+intPlayerSum);
-				intUserBet=dealerBust(con,intUserBet);
-				playAgainScreen(con,intUserBet,blnLoseCondition);			
-			}else if(intPlayerSum==intDealerSum){
-				System.out.println("Tie");
-				intUserBet=tie(con,intUserBet);
-				playAgainScreen(con,intUserBet,blnLoseCondition);
-			}else if(intDealerSum==21){
-				blnLoseCondition=true;
-				System.out.println("dealer blackjack");
-				intUserBet=dealerBlackjack(con, intUserBet);
-				playAgainScreen(con,intUserBet,blnLoseCondition);
-			}else if(intDealerSum>intPlayerSum){
-				blnLoseCondition=true;
-				System.out.println("lose"+intDealerSum+" "+intPlayerSum);
-				intUserBet=dealerWins(con,intUserBet);
-				playAgainScreen(con,intUserBet,blnLoseCondition);
-			}else if(intPlayerSum>intDealerSum){
-				blnLoseCondition=false;
-				System.out.println("Win >"+intDealerSum+" "+intPlayerSum);
-				intUserBet=userWins(con,intUserBet);
-				playAgainScreen(con,intUserBet,blnLoseCondition);
+			
+			int intPlayerCardValue1=cardValues(intPlayer[0][0]);
+			int intPlayerCardValue2=cardValues(intPlayer[1][0]);
+			int intPlayerCardValue3=0;
+			int intPlayerCardValue4=0;
+			int intPlayerCardValue5=0;
+			int intDealerCardValue1=cardValues(intDealer[0][0]);
+
+			intPlayerSum=intPlayerCardValue1+intPlayerCardValue2;
+			System.out.println(intPlayerCardValue1+" "+intPlayerCardValue2);
+		
+
+			BufferedImage imgPlayerCard3=null;
+			BufferedImage imgPlayerCard4=null;
+			BufferedImage imgPlayerCard5=null;
+
+			con.clear();
+			con.println("Your sum: "+intPlayerSum);
+			con.println("Dealer's sum: "+intDealerCardValue1);
+
+			while(blnCondition==true){
+				if(intPlayerCardValue1+intPlayerCardValue2==21){
+					blnWinOffDeal=true;
+					blnLoseCondition=false;
+					break;
+				}else if(intPlayerCardValue1+intPlayerCardValue2==9||intPlayerCardValue1+intPlayerCardValue2==10||intPlayerCardValue1+intPlayerCardValue2==11){
+					if((intUserBalance/intUserBet)>=2){
+						intdoubleDownCount++;
+						if(intdoubleDownCount==1){
+							con.sleep(1000);
+							int intChoice=doubleDown(con);
+							if(intChoice==89){//double down
+								intPlayer[intCount][0]=intArray[intCount+2][0];
+								intPlayer[intCount][1]=intArray[intCount+2][1];
+								imgPlayerCard3=cardPictures(con,intPlayer[intCount][0],intPlayer[intCount][1]);	
+								intPlayerCardValue3=cardValues(intPlayer[intCount][0]);
+								intPlayerSum=intPlayerSum+intPlayerCardValue3;
+								con.sleep(1000);
+								con.drawImage(imgTable,0,0);
+								
+								con.drawImage(imgPlayerCard1,590,460); 
+								con.drawImage(imgPlayerCard2,610,470);
+								con.drawImage(imgPlayerCard3,630,460);
+
+								con.drawImage(imgBackside,590,210);
+								con.drawImage(imgDealerCard1,610,220);
+								con.repaint();
+								intUserBet=intUserBet*2;
+								System.out.println("bet"+intUserBet);
+								intCount++;
+								con.clear();
+								con.println("Your sum: "+intPlayerSum);
+								con.println("Dealer's sum: "+intDealerCardValue1);
+								con.repaint();
+								break;
+							}else if(intChoice==78){
+								con.sleep(1000);
+								con.drawImage(imgTable,0,1);
+								con.drawImage(imgPlayerCard1,590,460); 
+								con.drawImage(imgPlayerCard2,610,470);
+								con.drawImage(imgBackside,590,210);
+								con.drawImage(imgDealerCard1,610,220);
+								con.repaint();
+							}
+						}
+					}
+				}
+				int intKeypress = con.getKey();
+
+				if(intKeypress==72){
+					intPlayer[intCount][0]=intArray[intCount+2][0];
+					intPlayer[intCount][1]=intArray[intCount+2][1];
+					if(intCount==2){
+						imgPlayerCard3=cardPictures(con,intPlayer[intCount][0],intPlayer[intCount][1]);	
+						intPlayerCardValue3=cardValues(intPlayer[intCount][0]);
+						intPlayerSum=intPlayerSum+intPlayerCardValue3;
+						con.drawImage(imgTable,0,0);
+						
+						con.drawImage(imgPlayerCard1,590,460); 
+						con.drawImage(imgPlayerCard2,610,470);
+						con.drawImage(imgPlayerCard3,630,460);
+
+						con.drawImage(imgBackside,590,210);
+						con.drawImage(imgDealerCard1,610,220);
+
+						con.repaint();
+					}else if(intCount==3){
+						imgPlayerCard4=cardPictures(con,intPlayer[intCount][0],intPlayer[intCount][1]);
+						intPlayerCardValue4=cardValues(intPlayer[intCount][0]);
+						intPlayerSum=intPlayerSum+intPlayerCardValue4;
+						con.drawImage(imgTable,0,0);
+						
+						con.drawImage(imgPlayerCard1,570,460); 
+						con.drawImage(imgPlayerCard2,590,470);
+						con.drawImage(imgPlayerCard3,610,460);
+						con.drawImage(imgPlayerCard4,630,470);
+
+						con.drawImage(imgBackside,590,210);
+						con.drawImage(imgDealerCard1,610,220);
+						
+						con.repaint();
+					}else if(intCount==4){
+						imgPlayerCard5=cardPictures(con,intPlayer[intCount][0],intPlayer[intCount][1]);
+						intPlayerCardValue5=cardValues(intPlayer[intCount][0]);
+						intPlayerSum=intPlayerSum+intPlayerCardValue5;
+						con.drawImage(imgTable,0,0);
+						
+						con.drawImage(imgPlayerCard1,570,460); 
+						con.drawImage(imgPlayerCard2,590,470);
+						con.drawImage(imgPlayerCard3,610,460);
+						con.drawImage(imgPlayerCard4,630,470);
+						con.drawImage(imgPlayerCard5,650,460);
+
+						con.drawImage(imgBackside,590,210);
+						con.drawImage(imgDealerCard1,610,220);
+						
+						con.repaint();
+					}
+					intCount++;
+				}else if(intKeypress==83){
+					blnCondition=false;
+					blnLoseCondition=false;
+					System.out.println(intPlayerCardValue1+" "+intPlayerCardValue2+" "+intPlayerCardValue3+" "+intPlayerCardValue4+" "+intPlayerCardValue5);
+				}
+
+				if(intCount==5){
+					blnCondition=false;
+					blnLoseCondition=false;
+				}
+
+				if(intPlayerSum>21){
+					if(intPlayerCardValue1==11){
+						intPlayerCardValue1=1;
+						intPlayerSum=intPlayerCardValue1+intPlayerCardValue2+intPlayerCardValue3+intPlayerCardValue4+intPlayerCardValue5;
+					}else if(intPlayerCardValue2==11){
+						intPlayerCardValue2=1;
+						intPlayerSum=intPlayerCardValue1+intPlayerCardValue2+intPlayerCardValue3+intPlayerCardValue4+intPlayerCardValue5;
+					}else if(intPlayerCardValue3==11){
+						intPlayerCardValue3=1;
+						intPlayerSum=intPlayerCardValue1+intPlayerCardValue2+intPlayerCardValue3+intPlayerCardValue4+intPlayerCardValue5;
+					}else if(intPlayerCardValue4==11){
+						intPlayerCardValue4=1;
+						intPlayerSum=intPlayerCardValue1+intPlayerCardValue2+intPlayerCardValue3+intPlayerCardValue4+intPlayerCardValue5;
+					}else if(intPlayerCardValue5==11){
+						intPlayerCardValue5=1;
+						intPlayerSum=intPlayerCardValue1+intPlayerCardValue2+intPlayerCardValue3+intPlayerCardValue4+intPlayerCardValue5;
+					}else{
+						blnCondition=false;
+						blnLoseCondition=true;
+						System.out.println("lose");
+					}
+				}if(intPlayerSum==21){
+					blnCondition=false;
+					blnLoseCondition=false;
+				}
+				con.clear();
+				con.println("Your sum: "+intPlayerSum);
+				con.println("Dealer's sum: "+intDealer[0][0]);
+				con.repaint();
+			}
+			
+			if(blnLoseCondition==true){
+				intUserBet=bustScreen(con,intUserBet);
+				System.out.println(intUserBet);
+				blnContinousGame=playAgainScreen(con,intUserBet,blnLoseCondition,blnContinousGame);
+			}else if(intPlayerSum==21){
+				intUserBet=blackjackScreen(con,intUserBet, blnWinOffDeal);
+				blnContinousGame=playAgainScreen(con,intUserBet,blnLoseCondition,blnContinousGame);
+			}else if(intCount==5){
+				intUserBet=fiveCards(con,intUserBet);
+				blnContinousGame=playAgainScreen(con,intUserBet,blnLoseCondition,blnContinousGame);
+			}else if(blnLoseCondition==false){//dealer turn
+				BufferedImage imgDealerCard2=cardPictures(con,intDealer[1][0],intDealer[1][1]);
+				BufferedImage imgDealerCard3=null;
+				BufferedImage imgDealerCard4=null;
+				BufferedImage imgDealerCard5=null;
+				int intDealerCardValue2=cardValues(intDealer[1][0]);
+				intDealerSum=intDealerCardValue1+intDealerCardValue2;
+				int intDealerCardValue3=0;
+				int intDealerCardValue4=0;
+				int intDealerCardValue5=0;
+				con.drawImage(imgDealerCard2,590,210);
+				con.drawImage(imgDealerCard1,610,220);
+
+				con.clear();
+				con.println("Your sum: "+intPlayerSum);
+				con.println("Dealer's sum: "+intDealerSum);
+				
+				while(intDealerSum<17){
+					con.sleep(1000);
+					intDealer[intDealerCounter][0]=intArray[intCount+intDealerCounter][0];
+					intDealer[intDealerCounter][1]=intArray[intCount+intDealerCounter][1];
+					if(intDealerCounter==2){
+						imgDealerCard3=cardPictures(con,intDealer[intDealerCounter][0],intDealer[intDealerCounter][1]);	
+						intDealerCardValue3=cardValues(intDealer[intDealerCounter][0]);
+						intDealerSum=intDealerSum+intDealerCardValue3;
+						con.drawImage(imgTable,0,0);
+
+						if(intCount==2){
+							con.drawImage(imgPlayerCard1,590,460); //540 and 660
+							con.drawImage(imgPlayerCard2,610,470);
+						}else if(intCount==3){
+							con.drawImage(imgPlayerCard1,590,460); 
+							con.drawImage(imgPlayerCard2,610,470);
+							con.drawImage(imgPlayerCard3,630,460);
+						}else if(intCount==4){
+							con.drawImage(imgPlayerCard1,570,460); 
+							con.drawImage(imgPlayerCard2,590,470);
+							con.drawImage(imgPlayerCard3,610,460);
+							con.drawImage(imgPlayerCard4,630,470);
+						}else if(intCount==5){					
+							con.drawImage(imgPlayerCard1,570,460); 
+							con.drawImage(imgPlayerCard2,590,470);
+							con.drawImage(imgPlayerCard3,610,460);
+							con.drawImage(imgPlayerCard4,630,470);
+							con.drawImage(imgPlayerCard5,650,460);
+						}
+
+						con.drawImage(imgDealerCard2,590,210);
+						con.drawImage(imgDealerCard1,610,220);
+						con.drawImage(imgDealerCard3,630,210);
+
+						con.repaint();
+					}else if(intDealerCounter==3){
+						imgDealerCard4=cardPictures(con,intDealer[intDealerCounter][0],intDealer[intDealerCounter][1]);
+						intDealerCardValue4=cardValues(intDealer[intDealerCounter][0]);
+						intDealerSum=intDealerSum+intDealerCardValue4;
+						con.drawImage(imgTable,0,0);
+
+						if(intCount==2){
+							con.drawImage(imgPlayerCard1,590,460); //540 and 660
+							con.drawImage(imgPlayerCard2,610,470);
+						}else if(intCount==3){
+							con.drawImage(imgPlayerCard1,590,460); 
+							con.drawImage(imgPlayerCard2,610,470);
+							con.drawImage(imgPlayerCard3,630,460);
+						}else if(intCount==4){
+							con.drawImage(imgPlayerCard1,570,460); 
+							con.drawImage(imgPlayerCard2,590,470);
+							con.drawImage(imgPlayerCard3,610,460);
+							con.drawImage(imgPlayerCard4,630,470);
+						}else if(intCount==5){					
+							con.drawImage(imgPlayerCard1,570,460); 
+							con.drawImage(imgPlayerCard2,590,470);
+							con.drawImage(imgPlayerCard3,610,460);
+							con.drawImage(imgPlayerCard4,630,470);
+							con.drawImage(imgPlayerCard5,650,460);
+						}
+						con.drawImage(imgDealerCard2,590,210);
+						con.drawImage(imgDealerCard1,610,220);
+						con.drawImage(imgDealerCard3,630,210);
+						con.drawImage(imgDealerCard4,650,220);
+						
+						con.repaint();
+					}else if(intDealerCounter==4){
+						imgDealerCard5=cardPictures(con,intDealer[intDealerCounter][0],intDealer[intDealerCounter][1]);
+						intDealerCardValue5=cardValues(intDealer[intDealerCounter][0]);
+						intDealerSum=intDealerSum+intDealerCardValue5;
+						con.drawImage(imgTable,0,0);
+
+						if(intCount==2){
+							con.drawImage(imgPlayerCard1,590,460); //540 and 660
+							con.drawImage(imgPlayerCard2,610,470);
+						}else if(intCount==3){
+							con.drawImage(imgPlayerCard1,590,460); 
+							con.drawImage(imgPlayerCard2,610,470);
+							con.drawImage(imgPlayerCard3,630,460);
+						}else if(intCount==4){
+							con.drawImage(imgPlayerCard1,570,460); 
+							con.drawImage(imgPlayerCard2,590,470);
+							con.drawImage(imgPlayerCard3,610,460);
+							con.drawImage(imgPlayerCard4,630,470);
+						}else if(intCount==5){					
+							con.drawImage(imgPlayerCard1,570,460); 
+							con.drawImage(imgPlayerCard2,590,470);
+							con.drawImage(imgPlayerCard3,610,460);
+							con.drawImage(imgPlayerCard4,630,470);
+							con.drawImage(imgPlayerCard5,650,460);
+						}
+						con.drawImage(imgDealerCard2,590,210);
+						con.drawImage(imgDealerCard1,610,220);
+						con.drawImage(imgDealerCard3,630,210);
+						con.drawImage(imgDealerCard4,650,220);
+						con.drawImage(imgDealerCard5,670,210);
+						
+						con.repaint();
+						
+					}
+					intDealerCounter++;
+					if(intDealerSum>21){
+						if(intDealerCardValue1==11){
+							intDealerCardValue1=1;
+							intDealerSum=intDealerCardValue1+intDealerCardValue2+intDealerCardValue3+intDealerCardValue4+intDealerCardValue5;
+						}else if(intDealerCardValue2==11){
+							intDealerCardValue2=1;
+							intDealerSum=intDealerCardValue1+intDealerCardValue2+intDealerCardValue3+intDealerCardValue4+intDealerCardValue5;
+						}else if(intDealerCardValue3==11){
+							intDealerCardValue3=1;
+							intDealerSum=intDealerCardValue1+intDealerCardValue2+intDealerCardValue3+intDealerCardValue4+intDealerCardValue5;
+						}else if(intDealerCardValue4==11){
+							intDealerCardValue4=1;
+							intDealerSum=intDealerCardValue1+intDealerCardValue2+intDealerCardValue3+intDealerCardValue4+intDealerCardValue5;
+						}else if(intDealerCardValue5==11){
+							intDealerCardValue5=1;
+							intDealerSum=intDealerCardValue1+intDealerCardValue2+intDealerCardValue3+intDealerCardValue4+intDealerCardValue5;
+						}else{
+							blnDealerBust=true;
+							break;
+						}
+					}	
+					con.clear();
+					con.println("Your sum: "+intPlayerSum);
+					con.println("Dealer's sum: "+intDealerSum);
+					con.repaint();
+				}
+				con.clear();
+				con.println("Your sum: "+intPlayerSum);
+				con.println("Dealer's sum: "+intDealerSum);
+				con.repaint();
+				con.sleep(1000);
+				if(blnDealerBust==true){	
+					blnLoseCondition=false;		
+					System.out.println("Win off db"+intDealerSum+" "+intPlayerSum);
+					intUserBet=dealerBust(con,intUserBet);
+					blnContinousGame=playAgainScreen(con,intUserBet,blnLoseCondition,blnContinousGame);			
+				}else if(intPlayerSum==intDealerSum){
+					System.out.println("Tie");
+					intUserBet=tie(con,intUserBet);
+					blnContinousGame=playAgainScreen(con,intUserBet,blnLoseCondition,blnContinousGame);
+				}else if(intDealerSum==21){
+					blnLoseCondition=true;
+					System.out.println("dealer blackjack");
+					intUserBet=dealerBlackjack(con, intUserBet);
+					blnContinousGame=playAgainScreen(con,intUserBet,blnLoseCondition,blnContinousGame);
+				}else if(intDealerSum>intPlayerSum){
+					blnLoseCondition=true;
+					System.out.println("lose"+intDealerSum+" "+intPlayerSum);
+					intUserBet=dealerWins(con,intUserBet);
+					blnContinousGame=playAgainScreen(con,intUserBet,blnLoseCondition,blnContinousGame);
+				}else if(intPlayerSum>intDealerSum){
+					blnLoseCondition=false;
+					System.out.println("Win >"+intDealerSum+" "+intPlayerSum);
+					intUserBet=userWins(con,intUserBet);
+					blnContinousGame=playAgainScreen(con,intUserBet,blnLoseCondition,blnContinousGame);
+				}
+			}
+			System.out.println(blnContinousGame);
+			if(intUserBalance==0){
+				outOfMoney(con);
+				sortHighscore(con,intUserBalance,strUsername);
+				con.closeConsole();
+			}
+			if(blnContinousGame==false){
+				gameOver(con);
+				sortHighscore(con,intUserBalance,strUsername);
+				con.closeConsole();
 			}
 		}
-
-		//while(true){
-			//int intMouseButton=con.currentMouseButton();
-			//if(intMouseButton==1){
-			//	int mousex=con.currentMouseX();
-			//	int mousey=con.currentMouseY();
-			//	System.out.println(mousex+" "+mousey);
-			//}
-		//}
 	}
 	public static int homescreen(Console con){
 		int inty=50;
@@ -402,15 +473,14 @@ public class workingfile{
 	}
 	
 	public static void highscores(Console con){
-		BufferedImage imgHighscoreScreen = con.loadImage("../images/highscore.png");
+		boolean blnCondition=true;
 		Font fntBaron=con.loadFont("../fonts/BaronNeue-Regular.ttf",30);
 		con.setDrawFont(fntBaron);
 		TextInputFile txtHighscores = new TextInputFile("highscores.txt");
-		con.drawImage(imgHighscoreScreen,0,0);
 		
 		int intCounter=1;
 		int inty=150;
-		while(txtHighscores.eof()==false){
+		for(int i=0;i<7;i++){
 			String stringHighscore=txtHighscores.readLine();
 			int intHighscore=txtHighscores.readInt();
 			
@@ -424,18 +494,28 @@ public class workingfile{
 			inty=inty+65;
 		}
 		con.repaint();
-		while(true){
+		while(blnCondition==true){
 			int intKeypress = con.getKey();
 			//System.out.println(intKeypress);
 			if(intKeypress==27){
-				break;
+				txtHighscores.close();
+				blnCondition=false;
 			}
 			con.sleep(33);
 			con.repaint();
 		}
 	}
 
+	public static String name(Console con){
+		Font fntBaron=con.loadFont("../fonts/BaronNeue-Regular.ttf",40);
+		con.setTextFont(fntBaron);	
+		con.print("\n\n\n\n\n\n\n\n\n                                         ");
+		String strUsername=con.readLine();
+		return strUsername;
+	}
+
 	public static int bet(Console con){
+		con.clear();
 		int intBet=-5;
 		BufferedImage imgBetScreen=con.loadImage("../images/betscreen.png");
 		con.drawImage(imgBetScreen,0,0);
@@ -448,6 +528,23 @@ public class workingfile{
 		}
 		con.clear();
 		return intBet;
+	}
+
+	public static int doubleDown(Console con){
+		BufferedImage imgDoubleDown=con.loadImage("../images/doubleDownScreen.png");
+		con.drawImage(imgDoubleDown,0,0);
+		con.repaint();
+		int intKeypress=0;
+		while(true){
+			intKeypress=con.getKey();
+			if(intKeypress==89){
+				break;
+			}else if(intKeypress==78){
+				break;
+			}
+		}
+		System.out.println(intKeypress);
+		return intKeypress;
 	}
 	
 	public static int bustScreen(Console con,int intBet){
@@ -479,7 +576,7 @@ public class workingfile{
 		}
 		return intBet;
 	}
-	public static int Fivecards(Console con,int intBet){
+	public static int fiveCards(Console con,int intBet){
 		int intKeypress=0;
 		con.sleep(1000);
 		BufferedImage img5cards=con.loadImage("../images/5cardScreen.png");
@@ -551,8 +648,8 @@ public static int dealerBust(Console con,int intBet){
 		intBet=intBet*2;
 		return intBet;
 	}
-	public static void playAgainScreen(Console con,int intBet,boolean blnCondition){
-		char charKeypress=' ';
+	public static boolean playAgainScreen(Console con,int intBet,boolean blnCondition,boolean blnContinousGame){
+		int intKeypress=' ';
 		BufferedImage imgBalanceScreen=con.loadImage("../images/balanceScreen.png");
 		BufferedImage imgDown=con.loadImage("../images/arrowDown.png");
 		BufferedImage imgUp=con.loadImage("../images/arrowUp.png");
@@ -567,26 +664,116 @@ public static int dealerBust(Console con,int intBet){
 		if(intBet==0){
 			System.out.println("tie");
 		}else if(blnCondition==true){
-			con.drawImage(imgDown,900,395);
+			con.drawImage(imgDown,920,395);
 		}else if(blnCondition==false){
 			con.drawImage(imgUp,920,395);
 		}
 		con.repaint();
-		while(charKeypress!='q'||charKeypress!='p'){
-
+		while(intKeypress!=80||intKeypress!=81){
+			intKeypress=con.getKey();
+			System.out.println(intKeypress);
+			if(intKeypress==81){
+				blnContinousGame=false;
+				break;
+			}else if(intKeypress==80){
+				blnContinousGame=true;
+				break;
+			}
 		}
+		return blnContinousGame;
+	}
+	public static void gameOver(Console con){
+		char chrKeypress=' ';
+		BufferedImage imgEnd=con.loadImage("../images/endScreen.png");
+		con.drawImage(imgEnd,0,0);
+		con.clear();
+		con.println("\n\n\n\n\n                  ending balance: $"+intUserBalance);
+		while(chrKeypress!='e'){
+			chrKeypress=con.getChar();
+		}
+	}
+	public static void outOfMoney(Console con){
+		char chrKeypress=' ';
+		BufferedImage imgOutofMoney=con.loadImage("../images/outOfMoneyScreen.png");
+		con.drawImage(imgOutofMoney,0,0);
+		con.clear();
+		while(chrKeypress!='q'){
+			chrKeypress=con.getChar();
+		}
+	}
+	public static void sortHighscore(Console con,int intBet,String strName){
+		TextInputFile txtHighscores = new TextInputFile("highscores.txt");
+		int intCounter=0;
+		int intCount=0;
+		while(txtHighscores.eof()==false){
+			String strHighscores=txtHighscores.readLine();
+			int intHighscores=txtHighscores.readInt();
+			intCount++;
+		}
+		txtHighscores.close();
+		txtHighscores = new TextInputFile("highscores.txt");
+
+		String [] strArray= new String[intCount+1];
+		int [] intArray = new int[intCount+1];
+		
+		while(txtHighscores.eof()==false){
+			String strHighscore=txtHighscores.readLine();
+			int intHighscore=txtHighscores.readInt();
+			strArray[intCounter]=strHighscore;
+			intArray[intCounter]=intHighscore;
+			intCounter++;
+		}
+		txtHighscores.close();
+		System.out.println("before sort");
+
+		for(int i=0;i<7;i++){
+			System.out.println(strArray[i]);
+			System.out.println(intArray[i]);
+		}
+		intArray[intCount]=intBet;
+		strArray[intCount]=strName;
+		
+		for(int intCounter2=0;intCounter2<intCount+1;intCounter2++){
+			for(int intCounter3=0;intCounter3<intCount-intCounter2;intCounter3++){
+				int intTemp;
+				String strTemp;
+				int intCurrent=intArray[intCounter3];
+				int intNext=intArray[intCounter3+1];
+
+				if(intNext>intCurrent){
+					intTemp=intArray[intCounter3+1];
+					intArray[intCounter3+1]=intArray[intCounter3];
+					intArray[intCounter3]=intTemp;
+
+					strTemp=strArray[intCounter3+1];
+					strArray[intCounter3+1]=strArray[intCounter3];
+					strArray[intCounter3]=strTemp;
+				}
+			}
+		}
+		System.out.println("After sort");
+		for(int i=0;i<intCount+1;i++){
+			System.out.println(strArray[i]);
+			System.out.println(intArray[i]);
+		}
+		TextOutputFile txtScores = new TextOutputFile("highscores.txt");
+		for(int i=0;i<intCount+1;i++){
+			txtScores.println(strArray[i]);
+			txtScores.println(intArray[i]);
+		}
+		txtScores.close();
 	}
 	public static int[][] shuffle(int intCards[][]){
 		intCards[0][0]=10;
-		intCards[0][1]=0;
+		intCards[0][1]=1;
 
 		intCards[1][0]=1;
 		intCards[1][1]=1;
 
-		intCards[2][0]=10;
-		intCards[2][1]=2;
+		intCards[2][0]=1;
+		intCards[2][1]=1;
 
-		intCards[3][0]=1;
+		intCards[3][0]=10;
 		intCards[3][1]=3;
 
 		intCards[4][0]=1;
@@ -749,5 +936,47 @@ public static int dealerBust(Console con,int intBet){
 			}	
 		}
 	return imgCard;
+	}
+	public static void slidetransition1(Console con){
+		//initializes variables
+		int intcounter;
+		BufferedImage imgNameScreen = con.loadImage("../images/nameScreen.png");
+		con.clear();
+
+		con.setDrawColor(new Color(0,0,0)); //custom RGB color
+		con.clear();
+		//draws a fill rectangle and moves its x position postively, creating a black rectangle to slide across the screen 
+		for(intcounter=0;intcounter<1285;intcounter=intcounter+4){
+			con.fillRect(0,0,intcounter,720);
+			con.repaint();
+			con.sleep(1);
+		}for(intcounter=0;intcounter<1285;intcounter=intcounter+6){
+			con.drawImage(imgNameScreen,0,0);
+			con.fillRect(intcounter,0,1280,720);
+			System.out.println(intcounter);
+			con.repaint();
+			con.sleep(1);
+		}
+	}
+	public static void slidetransition2(Console con){
+		//initializes variables
+		int intcounter;
+		BufferedImage imgHighscoreScreen = con.loadImage("../images/highscore.png");
+		con.clear();
+
+		con.setDrawColor(new Color(0,0,0)); //custom RGB color
+		con.clear();
+		//draws a fill rectangle and moves its x position postively, creating a black rectangle to slide across the screen 
+		for(intcounter=0;intcounter<1285;intcounter=intcounter+4){
+			con.fillRect(0,0,intcounter,720);
+			con.repaint();
+			con.sleep(1);
+		}for(intcounter=0;intcounter<1285;intcounter=intcounter+6){
+			con.drawImage(imgHighscoreScreen,0,0);
+			con.fillRect(intcounter,0,1280,720);
+			System.out.println(intcounter);
+			con.repaint();
+			con.sleep(1);
+		}
 	}
 }
